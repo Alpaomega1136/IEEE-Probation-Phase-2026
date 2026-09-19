@@ -1,5 +1,9 @@
 # API / Server Contract
 
+## Implemented Contract
+
+The application uses Route Handlers for mutations and the Auth.js-equivalent `/api/auth/*` endpoints for sign-in/session/sign-out. `GET /api/events` returns `{ data: Event[], meta: { total, page, pages } }`, with 9 events per page. Query fields are `search`, `status`, and `page`; upcoming includes UPCOMING/ONGOING and past includes COMPLETED. PATCH accepts a non-empty subset of editable fields. Mutation requests require the authenticated session and a matching Origin header. POST/PATCH require JSON. Image values accept HTTPS URLs, an empty value, or the three bundled sample paths; dates require an ISO datetime with timezone. See the root README for setup and examples.
+
 ## 1. General Notes
 
 The implementation may use:

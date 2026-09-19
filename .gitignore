@@ -4,10 +4,11 @@ out
 dist
 coverage
 
-.env
-.env.local
-.env.production
+.env*
+!.env.example
+.local/
+test-results/
+playwright-report/
 
 generated
 *.tsbuildinfo
-

@@ -1,5 +1,11 @@
 # Design Specification
 
+## Implemented Design Note
+
+The September 2026 visual revision adopts a campus technology publication direction: oversized poster typography over workbench photography, a yellow-green next-event band driven by database data, asymmetric upcoming-event composition, date-stamped catalogue entries, and an editorial archive list. Forest, off-white, and signal-yellow accents distinguish the public identity, with serif italics reserved for section headings and monospace metadata. The admin workspace uses restrained matching accents. Existing navigation, data contracts, status labels, and CRUD workflows remain in place. Mobile layouts reflow without hiding essential event information; motion respects reduced-motion preferences.
+
+The finished homepage uses a full-width photographic hero with the literal heading "IEEE ITB Events" and a visible lead-in to the upcoming-events section. This supersedes the split-column hero recommendation below. Public pages retain the specified conference-style hierarchy; the admin area uses a separate, compact workspace. Images and seeded event schedules are illustrative demo content. Interface copy is in English, with dates and times displayed in WIB.
+
 ## 1. Direction
 
 The public interface should use the visual hierarchy of a modern conference/event website inspired by a **Symposium-style layout**, but it should not copy the template directly.

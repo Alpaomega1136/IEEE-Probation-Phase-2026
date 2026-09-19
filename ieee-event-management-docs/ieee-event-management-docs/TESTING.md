@@ -1,5 +1,11 @@
 # Testing Strategy
 
+## Runnable Checks
+
+`npm run test:recovery` uses a production build with an intentionally unreachable database to verify the public retry state and ensure event/authentication API errors do not expose database details. It starts and stops its own server on an available port and does not modify the project database.
+
+Run `npm test` for Zod validation, timezone round-trips, and bcrypt checks. With the seeded development application running, use `npm run test:e2e` for Playwright acceptance tests including direct unauthorized requests, CRUD persistence, malformed inputs, origin checks, pagination, failure feedback, sign-out, and desktop/mobile layouts. Browser screenshots are generated under ignored `.local/screenshots`. Run `npm run lint`, `npm run typecheck`, and `npm run build` for the quality gate. See the root README for browser installation and environment setup.
+
 ## 1. Goal
 
 Testing should protect critical probation requirements without creating excessive infrastructure.

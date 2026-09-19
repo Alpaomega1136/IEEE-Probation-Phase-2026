@@ -1,5 +1,9 @@
 # Database Specification
 
+## Implementation Notes
+
+The initial migration is checked in under `prisma/migrations/20260919110430_init`. Dates are persisted in UTC and displayed/edited in Asia/Jakarta. The idempotent development seed uses stable demo event IDs so repeated runs do not duplicate events or overwrite edits. Admin credentials are required environment variables; passwords must be 12-72 characters and no more than 72 UTF-8 bytes. Local setup creates a project-only PostgreSQL cluster on port 5433. See the root README for setup and production configuration.
+
 ## 1. Database
 
 Use **PostgreSQL** with **Prisma ORM**.

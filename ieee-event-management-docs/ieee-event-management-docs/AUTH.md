@@ -1,5 +1,9 @@
 # Authentication & Authorization
 
+## Implemented Strategy
+
+NextAuth v4 Credentials uses bcrypt password verification and encrypted JWT cookies with an 8-hour lifetime. Every protected page and mutation also verifies that the administrator still exists in PostgreSQL. Only database-provisioned users can be admins. Mutation Route Handlers require a same-origin Origin header; NextAuth supplies its own login/logout CSRF protection. Failed sign-in messages do not reveal whether the email exists. A bounded in-process limiter allows up to 10 credential attempts per email per 15 minutes; use a shared limiter when deploying multiple instances. Logout clears the browser session cookie; per-session token revocation is outside this JWT implementation.
+
 ## 1. Goal
 
 Only authorized admins may access event-management functionality.

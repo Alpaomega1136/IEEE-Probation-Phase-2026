@@ -1,5 +1,9 @@
 # Implementation Roadmap
 
+## Current Implementation
+
+The application, local PostgreSQL setup, migrations, seed, public pages, protected admin workflows, search/filter/pagination, responsive styles, tests, and root README have been implemented. The original checklist below is the planning baseline; the root README documents the runnable implementation. Deployment, repository publication, and final owner review remain submission activities rather than local application features.
+
 Complete phases in order unless a dependency requires otherwise.
 
 ---

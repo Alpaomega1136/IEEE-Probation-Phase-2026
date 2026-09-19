@@ -1,5 +1,9 @@
 # Technical Architecture
 
+## Implemented Layout
+
+Public routes live in `app/(public)`. Admin sign-in is `app/admin/login`; protected routes live in `app/admin/(protected)` so the login page is outside the protected layout. Each protected page checks authorization before reading data, and each mutation independently repeats the check. Route Handlers are the sole event mutation mechanism. Public Server Components call the shared event service directly. `components` contains shared and interactive UI without additional repository/factory layers.
+
 ## 1. Architecture Goal
 
 Use a simple monolithic fullstack architecture appropriate for a probation project.
