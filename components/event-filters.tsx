@@ -20,6 +20,7 @@ export function EventFilters({
           Search events
         </label>
         <input
+          key={search}
           id="event-search"
           name="search"
           placeholder="Search events..."
@@ -35,29 +36,28 @@ export function EventFilters({
           <Search size={17} />
         </button>
       </div>
-      <label className="sr-only" htmlFor="event-status">
-        Filter by status
-      </label>
-      <select
-        id="event-status"
-        name="status"
-        defaultValue={status}
-        aria-label="Filter by status"
-      >
-        <option value="all">All events</option>
-        <option value="upcoming">Upcoming & ongoing</option>
-        <option value="past">Past events</option>
-        {admin && (
-          <>
-            <option value="UPCOMING">Upcoming</option>
-            <option value="ONGOING">Ongoing</option>
-            <option value="COMPLETED">Completed</option>
-          </>
-        )}
-        <option value="CANCELLED">Cancelled</option>
-      </select>
+      {admin ? (
+        <input type="hidden" name="status" value={status} />
+      ) : (
+        <>
+          <label className="sr-only" htmlFor="event-status">
+            Filter by status
+          </label>
+          <select
+            id="event-status"
+            name="status"
+            defaultValue={status}
+            aria-label="Filter by status"
+          >
+            <option value="all">All events</option>
+            <option value="upcoming">Upcoming & ongoing</option>
+            <option value="past">Past events</option>
+            <option value="CANCELLED">Cancelled</option>
+          </select>
+        </>
+      )}
       <button className="button button-secondary" type="submit">
-        Apply
+        {admin ? "Search" : "Apply"}
       </button>
       {(search || status !== "all") && (
         <Link

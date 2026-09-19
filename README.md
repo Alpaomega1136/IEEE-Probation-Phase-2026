@@ -7,6 +7,7 @@ A fullstack event catalogue and administration workspace for the IEEE ITB probat
 - Public home, event catalogue, event detail, and About pages.
 - Search, persisted-status filters, and server-side pagination (9 events per page).
 - Admin sign-in, an overview dashboard, and event create/edit/delete workflows.
+- A modern admin workspace with status summaries, an upcoming agenda, thumbnail event lists, status tabs, mobile event rows, and a live preview in the shared create/edit form.
 - A keyboard-accessible delete confirmation dialog, field validation, progress indicators, success messages, and loading/empty/error/not-found states.
 - PostgreSQL persistence, an initial migration, and an idempotent development seed.
 - Responsive public navigation and a separate mobile admin drawer.
@@ -57,6 +58,7 @@ Set `.env` using the names in `.env.example`, pointing `DATABASE_URL` at a dedic
 | `SEED_ADMIN_PASSWORD` | Admin seed password, 12-72 characters |
 | `SEED_ADMIN_NAME` | Admin display name |
 | `PGBIN` | Optional path to PostgreSQL executables for local setup |
+| `NEXT_BUILD_DIR` | Optional alternative Next.js output directory, e.g. `.local/build-admin`, when a local build cache is locked. Use the same value for build and start; default is `.next`. |
 
 If port 3000 is occupied, update `NEXTAUTH_URL` and run `npm run dev -- --port 3001`. Mutation requests must come from the configured origin.
 

@@ -1,12 +1,11 @@
 import Link from "next/link";
-import { Plus, Pencil, ArrowUpRight, CheckCircle2 } from "lucide-react";
+import { Plus, CheckCircle2 } from "lucide-react";
 import { requireAdminPage } from "@/lib/auth/session";
 import { eventService } from "@/lib/services/events";
 import { eventQuerySchema } from "@/lib/validations/event";
-import { formatDate, formatTime } from "@/lib/events";
 import { EventFilters } from "@/components/event-filters";
-import { StatusBadge, EmptyState, Pagination } from "@/components/events";
-import { DeleteEvent } from "@/components/delete-event";
+import { EmptyState, Pagination } from "@/components/events";
+import { AdminEventList } from "@/components/admin-event-list";
 
 export const metadata = { title: "Manage events" };
 export default async function AdminEvents({
@@ -24,13 +23,25 @@ export default async function AdminEvents({
     ["updated", "Event updated successfully."],
     ["deleted", "Event deleted successfully."],
   ]).get(String(params.notice));
+  const tabs = [
+    { value: "all", label: "All events" },
+    { value: "upcoming", label: "Upcoming" },
+    { value: "ONGOING", label: "Ongoing" },
+    { value: "past", label: "Completed" },
+    { value: "CANCELLED", label: "Cancelled" },
+  ];
   return (
     <>
       <div className="admin-heading">
         <div>
           <p className="eyebrow">Event management</p>
-          <h1>Events</h1>
-          <p>Your community&apos;s next experience starts here.</p>
+          <h1>
+            Events{" "}
+            <span className="heading-count" aria-hidden="true">
+              {meta.total}
+            </span>
+          </h1>
+          <p>Great experiences start with the details.</p>
         </div>
         <Link className="button button-primary" href="/admin/events/new">
           <Plus size={18} />
@@ -43,64 +54,26 @@ export default async function AdminEvents({
           {notice}
         </div>
       )}
+      <nav className="admin-status-tabs" aria-label="Event status">
+        {tabs.map(({ value, label }) => (
+          <Link
+            key={value}
+            href={`/admin/events?${new URLSearchParams({ status: value, search: query.search })}`}
+            aria-current={
+              query.status === value ||
+              (value === "past" && query.status === "COMPLETED") ||
+              (value === "upcoming" && query.status === "UPCOMING")
+                ? "page"
+                : undefined
+            }
+          >
+            {label}
+          </Link>
+        ))}
+      </nav>
       <EventFilters {...query} base="/admin/events" admin />
       {events.length ? (
-        <div className="table-scroll">
-          <table className="management-table">
-            <thead>
-              <tr>
-                <th>Event</th>
-                <th>Date & time</th>
-                <th>Location</th>
-                <th>Status</th>
-                <th className="align-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {events.map((event) => (
-                <tr key={event.id}>
-                  <td>
-                    <Link
-                      className="table-title"
-                      href={`/admin/events/${event.id}/edit`}
-                    >
-                      {event.title}
-                    </Link>
-                  </td>
-                  <td>
-                    {formatDate(event.date)}
-                    <small>{formatTime(event.date)}</small>
-                  </td>
-                  <td className="table-location">{event.location}</td>
-                  <td>
-                    <StatusBadge status={event.status} />
-                  </td>
-                  <td>
-                    <div className="table-actions">
-                      <Link
-                        href={`/events/${event.id}`}
-                        className="icon-button"
-                        title={`View ${event.title}`}
-                        aria-label={`View ${event.title}`}
-                      >
-                        <ArrowUpRight size={17} />
-                      </Link>
-                      <Link
-                        href={`/admin/events/${event.id}/edit`}
-                        className="icon-button"
-                        title={`Edit ${event.title}`}
-                        aria-label={`Edit ${event.title}`}
-                      >
-                        <Pencil size={16} />
-                      </Link>
-                      <DeleteEvent id={event.id} title={event.title} />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <AdminEventList events={events} />
       ) : (
         <EmptyState filtered={!!query.search || query.status !== "all"} />
       )}

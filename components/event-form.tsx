@@ -3,9 +3,23 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { LoaderCircle, Save } from "lucide-react";
+import {
+  LoaderCircle,
+  Save,
+  MapPin,
+  CalendarDays,
+  ImageIcon,
+} from "lucide-react";
+import { EventImage } from "@/components/event-image";
+import { StatusBadge } from "@/components/events";
 import { eventInputSchema } from "@/lib/validations/event";
-import { fromDateTimeInput, statusLabels } from "@/lib/events";
+import {
+  fromDateTimeInput,
+  statusLabels,
+  formatDate,
+  formatTime,
+  type EventStatus,
+} from "@/lib/events";
 
 type InitialEvent = {
   id: string;
@@ -21,6 +35,18 @@ export function EventForm({ event }: { event?: InitialEvent }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
+  const [preview, setPreview] = useState({
+    title: event?.title ?? "",
+    location: event?.location ?? "",
+    date: event?.date ?? "",
+    status: (event?.status ?? "UPCOMING") as EventStatus,
+    imageUrl: event?.imageUrl ?? "",
+  });
+  const previewDate = new Date(fromDateTimeInput(preview.date));
+  const hasDate = !Number.isNaN(previewDate.getTime());
+  const validImage = eventInputSchema.shape.imageUrl.safeParse(
+    preview.imageUrl,
+  ).success;
   const [fields, setFields] = useState<Record<string, string[] | undefined>>(
     {},
   );
@@ -75,13 +101,37 @@ export function EventForm({ event }: { event?: InitialEvent }) {
     }
   }
   return (
-    <form className="event-form" onSubmit={submit} noValidate>
+    <form
+      className="event-form"
+      onSubmit={submit}
+      noValidate
+      onChange={(e) => {
+        const values = new FormData(e.currentTarget);
+        const target = e.target;
+        if (
+          target instanceof HTMLInputElement ||
+          target instanceof HTMLTextAreaElement ||
+          target instanceof HTMLSelectElement
+        ) {
+          const name = target.name;
+          if (fields[name])
+            setFields((current) => ({ ...current, [name]: undefined }));
+        }
+        setPreview((current) => ({
+          title: String(values.get("title") ?? ""),
+          location: String(values.get("location") ?? ""),
+          date: String(values.get("date") ?? ""),
+          status: String(values.get("status") ?? "UPCOMING") as EventStatus,
+          imageUrl: current.imageUrl,
+        }));
+      }}
+    >
       {error && (
         <div className="notice error" role="alert">
           {error}
         </div>
       )}
-      <fieldset disabled={pending}>
+      <fieldset disabled={pending} className="editor-fields">
         <legend className="sr-only">Event details</legend>
         <div className="form-section">
           <div className="form-section-heading">
@@ -129,6 +179,10 @@ export function EventForm({ event }: { event?: InitialEvent }) {
                 name="imageUrl"
                 type="text"
                 defaultValue={event?.imageUrl ?? ""}
+                onBlur={(e) => {
+                  const imageUrl = e.currentTarget.value.trim();
+                  setPreview((current) => ({ ...current, imageUrl }));
+                }}
                 placeholder="https://example.com/event.jpg"
                 maxLength={2048}
                 {...invalid("imageUrl")}
@@ -195,6 +249,49 @@ export function EventForm({ event }: { event?: InitialEvent }) {
           </div>
         </div>
       </fieldset>
+      <aside className="editor-preview" aria-label="Event preview">
+        <div className="preview-heading">
+          <ImageIcon size={16} />
+          <h2>Event preview</h2>
+        </div>
+        <div className="preview-event">
+          <EventImage
+            key={preview.imageUrl}
+            src={validImage ? preview.imageUrl : null}
+            alt="Event cover preview"
+          />
+          <div className="preview-event-body">
+            <StatusBadge status={preview.status} />
+            <h3>{preview.title || "Your next great event"}</h3>
+            <p>
+              <CalendarDays size={15} />
+              {hasDate
+                ? `${formatDate(previewDate)} / ${formatTime(previewDate)}`
+                : "Date to be confirmed"}
+            </p>
+            <p>
+              <MapPin size={15} />
+              {preview.location || "Location to be confirmed"}
+            </p>
+          </div>
+        </div>
+        <dl className="preview-summary">
+          <div>
+            <dt>Organizer</dt>
+            <dd>IEEE ITB Student Branch</dd>
+          </div>
+          <div>
+            <dt>Time zone</dt>
+            <dd>Asia/Jakarta (WIB)</dd>
+          </div>
+          {event && (
+            <div>
+              <dt>Visibility</dt>
+              <dd>Public event</dd>
+            </div>
+          )}
+        </dl>
+      </aside>
       <div className="form-actions">
         <Link
           href="/admin/events"

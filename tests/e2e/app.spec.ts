@@ -151,6 +151,21 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
     "Unable to sign in",
   );
   await login(page);
+  await expect
+    .poll(() =>
+      page.locator(".managed-event img").evaluateAll(
+        (images) =>
+          images.length > 0 &&
+          images.every((image) => {
+            const img = image as HTMLImageElement;
+            return img.complete && img.naturalWidth > 0;
+          }),
+      ),
+    )
+    .toBe(true);
+  await page.locator(".managed-event img").evaluateAll((images) =>
+    Promise.all(images.map((image) => (image as HTMLImageElement).decode())),
+  );
   await page.screenshot({
     path: ".local/screenshots/admin-desktop.png",
     fullPage: true,
@@ -166,11 +181,36 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
       page.getByText("Title is required", { exact: true }),
     ).toBeVisible();
     await page.getByLabel("Event title").fill(title);
+    await expect(
+      page.getByText("Title is required", { exact: true }),
+    ).not.toBeVisible();
     await page
       .getByLabel("Description", { exact: false })
       .fill("A real database-backed event created during the acceptance test.");
     await page.getByLabel("Date & time (WIB)").fill("2026-12-01T09:00");
     await page.getByLabel("Location", { exact: false }).fill("Test venue, ITB");
+    await page
+      .getByLabel("Cover image URL", { exact: false })
+      .fill("/images/workshop.jpg");
+    await page.getByLabel("Cover image URL", { exact: false }).press("Tab");
+    await expect(
+      page
+        .getByRole("complementary", { name: "Event preview" })
+        .getByRole("img", { name: "Event cover preview" }),
+    ).toHaveAttribute("src", /\/images\/workshop\.jpg$/);
+    await expect(
+      page
+        .getByRole("complementary", { name: "Event preview" })
+        .getByRole("heading", { name: title, exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("complementary", { name: "Event preview" }),
+    ).toContainText("09:00 WIB");
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+    await page.screenshot({
+      path: ".local/screenshots/admin-editor-desktop.png",
+      fullPage: true,
+    });
     await page.route(
       "**/api/events",
       (route) =>
@@ -280,6 +320,11 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
     await page.setViewportSize({ width, height: 844 });
     await page.goto("/admin");
     await noOverflow(page);
+    if (width === 390)
+      await page.screenshot({
+        path: ".local/screenshots/admin-overview-mobile.png",
+        fullPage: true,
+      });
     await page.getByRole("button", { name: "Open admin menu" }).click();
     await page
       .getByRole("navigation", { name: "Admin navigation" })
@@ -290,6 +335,10 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
     ).toBeVisible();
     await noOverflow(page);
     if (width === 390) {
+      await page.screenshot({
+        path: ".local/screenshots/admin-events-mobile.png",
+        fullPage: true,
+      });
       await page.locator(".danger-icon").first().click();
       await expect(page.getByRole("dialog")).toBeVisible();
       await page.screenshot({
@@ -309,6 +358,11 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
         fullPage: true,
       });
   }
+  await page.getByRole("button", { name: "Open admin menu" }).click();
+  await page.getByRole("link", { name: "Create event", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Open admin menu" }),
+  ).toBeVisible();
   await page.getByRole("button", { name: "Open admin menu" }).click();
   await page.getByRole("button", { name: "Sign out", exact: true }).click();
   await expect(page).toHaveURL(/\/admin\/login/);

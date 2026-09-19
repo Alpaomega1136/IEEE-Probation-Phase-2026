@@ -12,6 +12,7 @@ import {
   Menu,
   X,
   LoaderCircle,
+  Plus,
 } from "lucide-react";
 import { Brand } from "@/components/brand";
 
@@ -69,6 +70,14 @@ export function AdminNav({ name, email }: { name: string; email: string }) {
         className={`admin-sidebar ${open ? "is-open" : ""}`}
       >
         <Brand admin />
+        <Link
+          href="/admin/events/new"
+          className="sidebar-create"
+          onClick={() => setOpen(false)}
+        >
+          <Plus size={18} />
+          Create event
+        </Link>
         <p className="sidebar-label">WORKSPACE</p>
         <nav aria-label="Admin navigation">
           <Link

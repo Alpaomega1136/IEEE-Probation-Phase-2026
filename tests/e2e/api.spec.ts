@@ -14,7 +14,31 @@ test("API pagination, partial update, and validation retain stored data", async 
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await expect(page).toHaveURL(/\/admin$/);
   await page.goto("/admin/events?notice=__proto__");
-  await expect(page.getByRole("heading", { name: "Events", exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Events", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("navigation", { name: "Event status", exact: true })
+    .getByRole("link", { name: "Completed", exact: true })
+    .click();
+  await expect(page).toHaveURL(/status=past/);
+  await expect(page.locator(".managed-event .status").first()).toHaveText(
+    "Completed",
+  );
+  const completed = await page
+    .locator(".managed-event .status")
+    .allTextContents();
+  expect(completed.length).toBeGreaterThan(0);
+  expect(completed.every((label) => label.trim() === "Completed")).toBe(true);
+  await page
+    .getByRole("navigation", { name: "Event status", exact: true })
+    .getByRole("link", { name: "All events", exact: true })
+    .click();
+  await expect(page).toHaveURL(/status=all/);
+  await page.screenshot({
+    path: ".local/screenshots/admin-events-desktop.png",
+    fullPage: true,
+  });
   const prefix = `QA Paging ${Date.now()}`;
   const ids: string[] = [];
   const input = {
