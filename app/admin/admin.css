@@ -1,14 +1,14 @@
 .admin-shell,
 .login-page {
-  --blue: #257158;
-  --blue-hover: #195a44;
-  --ink: #202d29;
-  --muted: #728078;
-  --line: #e3e9e5;
+  --blue: #145aa5;
+  --blue-hover: #0a4487;
+  --ink: #102d54;
+  --muted: #4679ac;
+  --line: #e0e6ec;
   font-family: "Segoe UI", Arial, sans-serif;
 }
 .admin-shell {
-  background: #f6f8f7;
+  background: #f5faff;
 }
 .admin-shell .button,
 .login-page .button {
@@ -19,7 +19,7 @@
 }
 .admin-shell .button-primary,
 .login-page .button-primary {
-  box-shadow: 0 2px 3px #1f5b3912;
+  box-shadow: 0 2px 3px #104c8912;
 }
 .admin-shell .icon-button {
   border-radius: 6px;
@@ -27,31 +27,24 @@
   height: 34px;
 }
 .admin-shell .icon-button:hover {
-  background: #ebf2ee;
-  color: #247157;
+  background: #ebeff2;
+  color: #244a71;
 }
 .admin-shell .danger-icon:hover {
   background: #fceeed;
   color: #b34044;
 }
 .admin-shell .edit-icon {
-  color: #32785e;
-  background: #edf5f0;
+  color: #315579;
+  background: #edf1f5;
 }
 .admin-shell .admin-sidebar {
   width: 232px;
   padding: 28px 18px 20px;
-  border-color: #e2e9e4;
+  border-color: #e0e5eb;
 }
 .admin-shell .admin-sidebar .brand {
-  padding-left: 10px;
-}
-.admin-shell .brand-mark {
-  border-color: #b4c8ba;
-  color: #357b5c;
-}
-.admin-shell .brand strong {
-  color: #2b5741;
+  width: 184px;
 }
 .sidebar-create {
   display: flex;
@@ -59,21 +52,21 @@
   justify-content: center;
   gap: 10px;
   margin: 33px 2px 28px;
-  background: #eef5f0;
-  color: #28674d;
-  border: 1px solid #d9e7dd;
+  background: #eef2f5;
+  color: #284867;
+  border: 1px solid #d9e0e7;
   border-radius: 7px;
   padding: 11px;
   font-size: 13px;
   font-weight: 600;
 }
 .sidebar-create:hover {
-  background: #e3efe7;
+  background: #e3e9ef;
 }
 .admin-shell .sidebar-label {
   font-size: 10px;
   margin: 0 13px 12px;
-  color: #92a098;
+  color: #6e99c4;
 }
 .admin-shell .admin-sidebar nav a {
   padding: 13px;
@@ -82,8 +75,8 @@
   gap: 12px;
 }
 .admin-shell .admin-sidebar nav a.active {
-  color: #226649;
-  background: #e8f2eb;
+  color: #224466;
+  background: #e8edf2;
   box-shadow: none;
 }
 .admin-shell .admin-sidebar nav a.active::after {
@@ -96,7 +89,7 @@
 }
 .admin-shell .sidebar-public {
   font-size: 12px;
-  color: #5b6f62;
+  color: #3b658f;
   padding-left: 12px;
 }
 .admin-shell .admin-profile {
@@ -134,14 +127,14 @@
   align-items: center;
   gap: 13px;
   font-size: 12px;
-  color: #87948d;
+  color: #5e8ebd;
 }
 .workspace-path strong {
-  color: #394b41;
+  color: #26425e;
   font-weight: 550;
 }
 .workspace-path > span {
-  color: #c3ccc6;
+  color: #b0c8df;
 }
 .topbar-account {
   display: flex;
@@ -152,7 +145,7 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  color: #536b5c;
+  color: #375f87;
   font-size: 12px;
 }
 .topbar-site:hover {
@@ -161,7 +154,7 @@
 .admin-shell .admin-role {
   padding-left: 18px;
   border-left: 1px solid var(--line);
-  color: #728378;
+  color: #477aae;
   gap: 6px;
 }
 .admin-shell .admin-content {
@@ -184,12 +177,12 @@
 .admin-shell .admin-heading .eyebrow {
   font-size: 10px;
   text-transform: none;
-  color: #6c8374;
+  color: #4578aa;
   margin-bottom: 8px;
   font-weight: 500;
 }
 .admin-shell .admin-heading p:not(.eyebrow) {
-  color: #7c8981;
+  color: #4e83b7;
   font-size: 13px;
   margin-top: 8px;
 }
@@ -200,8 +193,8 @@
   height: 26px;
   padding-inline: 8px;
   font-size: 12px;
-  background: #e7eee9;
-  color: #617969;
+  background: #e6ebef;
+  color: #3f6d9b;
   border-radius: 6px;
   font-weight: 500;
 }
@@ -214,13 +207,13 @@
   display: block;
   padding: 21px;
   background: white;
-  border: 1px solid #e3e9e5;
+  border: 1px solid #e0e6ec;
   border-radius: 8px;
-  box-shadow: 0 2px 3px #15271c03;
+  box-shadow: 0 2px 3px #111e2b03;
 }
 .admin-shell .stat:hover {
-  border-color: #afcdbb;
-  box-shadow: 0 4px 10px #244d3510;
+  border-color: #a3bed9;
+  box-shadow: 0 4px 10px #104c8910;
 }
 .admin-shell .stat .stat-top {
   display: flex;
@@ -230,7 +223,7 @@
   margin-bottom: 17px;
 }
 .stat-top > svg {
-  color: #a4b2aa;
+  color: #88abce;
 }
 .admin-shell .stat-icon {
   width: 36px;
@@ -241,9 +234,9 @@
   background: #e9f1fb;
   color: #5185bd;
 }
-.admin-shell .stat-icon.green {
-  background: #e8f3eb;
-  color: #448363;
+.admin-shell .stat-icon.sky {
+  background: #ddf4ff;
+  color: #117db5;
 }
 .admin-shell .stat-icon.gold {
   background: #fcf2dc;
@@ -254,7 +247,7 @@
   color: #b06b69;
 }
 .admin-shell .stat p {
-  color: #7a877f;
+  color: #4b81b6;
   font-size: 12px;
 }
 .admin-shell .stat strong {
@@ -265,7 +258,7 @@
 }
 .admin-shell .stat small {
   font-size: 10px;
-  color: #98a39c;
+  color: #759ec6;
 }
 .dashboard-columns {
   display: grid;
@@ -287,11 +280,11 @@
 }
 .admin-shell .compact > div > p:not(.eyebrow) {
   font-size: 12px;
-  color: #8b9790;
+  color: #6391bf;
   margin-top: 6px;
 }
 .admin-shell .text-link {
-  color: #4f8065;
+  color: #3c6893;
   font-size: 12px;
   font-weight: 500;
 }
@@ -309,8 +302,8 @@
 .event-list-columns {
   padding: 12px 16px;
   font-size: 10px;
-  color: #8b9890;
-  border-bottom: 1px solid #e1e8e3;
+  color: #6492bf;
+  border-bottom: 1px solid #dee4eb;
 }
 .event-list-columns > span:last-child {
   text-align: right;
@@ -322,7 +315,7 @@
 }
 .managed-event {
   padding: 18px 16px;
-  border-bottom: 1px solid #e5ebe6;
+  border-bottom: 1px solid #e3e8ed;
   background: #fff;
 }
 .managed-event:hover {
@@ -353,7 +346,7 @@
 }
 .managed-event-identity p {
   font-size: 10px;
-  color: #8c9a91;
+  color: #6693c0;
   margin-top: 4px;
   line-height: 1.6;
 }
@@ -362,7 +355,7 @@
   align-items: center;
   gap: 7px;
   font-size: 11px;
-  color: #5c6e62;
+  color: #3b658f;
 }
 .managed-event-schedule > svg {
   display: none;
@@ -370,7 +363,7 @@
 .managed-event-schedule small {
   display: block;
   font-size: 10px;
-  color: #9ba69e;
+  color: #79a1c8;
   margin-top: 4px;
 }
 .admin-shell .status {
@@ -384,12 +377,12 @@
   color: #507fb1;
 }
 .admin-shell .status-completed {
-  color: #5a8070;
-  background: #edf4ef;
+  color: #3f6d9b;
+  background: #edf1f4;
 }
 .admin-shell .status-ongoing {
-  color: #3c8654;
-  background: #e5f4e8;
+  color: #38618a;
+  background: #e5edf4;
 }
 .admin-shell .status-cancelled {
   color: #ae6463;
@@ -404,7 +397,7 @@
   min-width: 0;
 }
 .up-next .section-heading > svg {
-  color: #759383;
+  color: #5084b8;
 }
 .up-next ul {
   list-style: none;
@@ -412,7 +405,7 @@
   margin: 0 0 24px;
 }
 .up-next li {
-  border-bottom: 1px solid #e3eae4;
+  border-bottom: 1px solid #e1e6ec;
   padding: 21px 0;
 }
 .up-next li:first-child {
@@ -429,8 +422,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 6px;
-  background: #e8f0e5;
-  color: #518064;
+  background: #e5ebf0;
+  color: #3d6994;
   width: 43px;
   min-height: 52px;
   flex-shrink: 0;
@@ -446,7 +439,7 @@
   text-transform: uppercase;
 }
 .up-next li small {
-  color: #8c9a91;
+  color: #6693c0;
   font-size: 10px;
 }
 .up-next li h3 {
@@ -462,7 +455,7 @@
   display: flex;
   align-items: flex-start;
   gap: 4px;
-  color: #8e9d93;
+  color: #6996c2;
   font-size: 10px;
   line-height: 1.6;
   margin-top: 6px;
@@ -478,7 +471,7 @@
 .admin-status-tabs {
   display: flex;
   gap: 26px;
-  border-bottom: 1px solid #e0e8e2;
+  border-bottom: 1px solid #dee4ea;
   margin-bottom: 23px;
   overflow-x: auto;
 }
@@ -486,15 +479,15 @@
   padding: 13px 1px;
   white-space: nowrap;
   font-size: 12px;
-  color: #839289;
+  color: #5a8bbb;
   border-bottom: 2px solid transparent;
 }
 .admin-status-tabs a:hover {
-  color: #326b4f;
+  color: #2e4f6f;
 }
 .admin-status-tabs a[aria-current="page"] {
-  color: #347556;
-  border-bottom-color: #498465;
+  color: #315578;
+  border-bottom-color: #3b6792;
   font-weight: 600;
 }
 .admin-shell .filters {
@@ -505,13 +498,13 @@
 }
 .admin-shell .search-input {
   max-width: 340px;
-  border: 1px solid #e0e8e2;
+  border: 1px solid #dee4ea;
   border-radius: 7px;
   min-height: 42px;
 }
 .admin-shell .search-input > svg {
   width: 16px;
-  color: #9aa99e;
+  color: #7aa2c9;
 }
 .admin-shell .search-input > input {
   font-size: 12px;
@@ -522,12 +515,12 @@
 .admin-shell .pagination {
   margin-top: 20px;
   font-size: 11px;
-  color: #8c9a91;
+  color: #6693c0;
 }
 .admin-shell .back-link {
   font-size: 12px;
   margin-bottom: 19px;
-  color: #738d7c;
+  color: #4b80b5;
 }
 .admin-shell .event-form {
   max-width: none;
@@ -545,7 +538,7 @@
 .admin-shell .form-section {
   display: block;
   padding-block: 26px;
-  border-color: #e0e8e2;
+  border-color: #dee4ea;
 }
 .admin-shell .form-section-heading {
   margin-bottom: 23px;
@@ -556,7 +549,7 @@
 }
 .admin-shell .form-section-heading p {
   font-size: 12px;
-  color: #8e9b92;
+  color: #6894c1;
 }
 .admin-shell .form-fields {
   gap: 23px;
@@ -564,14 +557,14 @@
 .admin-shell .field label {
   font-size: 12px;
   font-weight: 550;
-  color: #5a6e60;
+  color: #3a648e;
 }
 .admin-shell .field input,
 .admin-shell .field textarea,
 .admin-shell .field select {
   border-radius: 7px;
-  border: 1px solid #dce6de;
-  color: #2e4235;
+  border: 1px solid #dae1e8;
+  color: #203850;
   font-size: 13px;
   background: #fff;
 }
@@ -581,7 +574,7 @@
 }
 .admin-shell .field input::placeholder,
 .admin-shell .field textarea::placeholder {
-  color: #a9b4ac;
+  color: #8dafd0;
 }
 .admin-shell .field [aria-invalid="true"] {
   border-color: #cc7279;
@@ -591,21 +584,21 @@
   top: 25px;
   min-width: 0;
   padding-top: 26px;
-  border-top: 1px solid #e0e8e2;
+  border-top: 1px solid #dee4ea;
 }
 .preview-heading {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 22px;
-  color: #6f8c7a;
+  color: #497eb2;
 }
 .preview-heading h2 {
   font-size: 13px;
   font-weight: 550;
 }
 .preview-event {
-  border: 1px solid #e1e9e3;
+  border: 1px solid #dfe5eb;
   border-radius: 8px;
   overflow: hidden;
   background: white;
@@ -627,7 +620,7 @@
   align-items: flex-start;
   gap: 8px;
   font-size: 11px;
-  color: #8b9b90;
+  color: #6693c0;
   line-height: 1.8;
   margin-top: 10px;
   overflow-wrap: anywhere;
@@ -646,40 +639,40 @@
   margin-bottom: 13px;
 }
 .preview-summary dt {
-  color: #99a69e;
+  color: #77a0c8;
 }
 .preview-summary dd {
   margin: 0;
   text-align: right;
-  color: #658171;
+  color: #4373a3;
 }
 .admin-shell .form-actions {
   grid-column: 1 / -1;
   margin-top: 15px;
   padding-block: 20px;
   position: static;
-  background: #f6f8f7;
-  border-top: 1px solid #dfe7e1;
+  background: #f5faff;
+  border-top: 1px solid #dde3e9;
 }
 .admin-shell .notice {
   border-radius: 7px;
   font-size: 12px;
 }
 .login-page {
-  background: #f3f7f4;
+  background: #edf8ff;
 }
 .login-page .login-panel {
   background: white;
-  border: 1px solid #e1e9e3;
+  border: 1px solid #dfe5eb;
   border-radius: 8px;
   padding: 35px;
   width: min(445px, calc(100% - 40px));
-  box-shadow: 0 12px 45px #244c3310;
+  box-shadow: 0 12px 45px #104c8910;
   margin-block: auto;
 }
 .login-page .login-icon {
-  background: #eaf3ed;
-  border-color: #d4e4d9;
+  background: #eaeff3;
+  border-color: #d4dce4;
   border-radius: 8px;
 }
 .login-page .login-panel h1 {
@@ -690,15 +683,8 @@
   margin-top: 27px;
 }
 .login-page .field input {
-  border-color: #d9e4dc;
+  border-color: #d7dfe6;
   border-radius: 7px;
-}
-.login-page .brand strong {
-  color: #2d664c;
-}
-.login-page .brand-mark {
-  color: #347553;
-  border-color: #b8cec0;
 }
 @media (max-width: 1200px) {
   .dashboard-columns {
@@ -839,7 +825,7 @@
   .managed-event {
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 15px 10px;
-    border: 1px solid #e1e9e3;
+    border: 1px solid #dfe5eb;
     border-radius: 8px;
     padding: 16px;
   }
@@ -864,12 +850,12 @@
   .managed-event-schedule > svg {
     display: block;
     margin-top: 3px;
-    color: #89a390;
+    color: #6a96c2;
   }
   .managed-event .table-actions {
     grid-column: 1 / -1;
     padding-top: 12px;
-    border-top: 1px solid #edf1ee;
+    border-top: 1px solid #ebeff3;
     gap: 7px;
   }
   .managed-event .icon-button {

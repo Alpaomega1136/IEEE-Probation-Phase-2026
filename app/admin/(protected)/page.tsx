@@ -46,7 +46,7 @@ export default async function Dashboard() {
             label: "Upcoming & ongoing",
             value: summary.upcoming,
             icon: CalendarClock,
-            className: "green",
+            className: "sky",
             href: "/admin/events?status=upcoming",
             note: "On the calendar",
           },

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Cpu } from "lucide-react";
+import Image from "next/image";
 
 export function Brand({ admin = false }: { admin?: boolean }) {
   return (
@@ -8,15 +8,13 @@ export function Brand({ admin = false }: { admin?: boolean }) {
       className="brand"
       aria-label={admin ? "IEEE ITB admin dashboard" : "IEEE ITB home"}
     >
-      <span className="brand-mark">
-        <Cpu size={24} strokeWidth={1.6} />
-      </span>
-      <span>
-        <strong>
-          IEEE <span>ITB</span>
-        </strong>
-        <small>{admin ? "EVENT MANAGEMENT" : "STUDENT BRANCH"}</small>
-      </span>
+      <Image
+        src="/images/ieee-itb-logo.png"
+        alt="IEEE ITB Student Branch"
+        width={2112}
+        height={745}
+        priority
+      />
     </Link>
   );
 }

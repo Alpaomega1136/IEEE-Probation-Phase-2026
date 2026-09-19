@@ -108,7 +108,7 @@ Provision PostgreSQL and configure `DATABASE_URL`, `AUTH_SECRET`, and `NEXTAUTH_
 
 ## Assets and Scope
 
-The six seeded events are demonstration data, not verified IEEE schedules. Bundled cover photos are illustrative Unsplash images, not official IEEE event documentation. Replace them with approved event artwork using the image URL field. Credits and original URLs are in `public/images/CREDITS.md`. The navigation mark uses a generic Lucide CPU icon, not the official IEEE logo.
+The six seeded events are demonstration data, not verified IEEE schedules. Bundled cover photos are illustrative Unsplash images, not official IEEE event documentation. Replace them with approved event artwork using the image URL field. Credits and original URLs are in `public/images/CREDITS.md`. The IEEE ITB Student Branch logo was provided for this project; the blue palette is based on the supplied visual reference.
 
 Images use HTTPS URLs (plus three bundled sample image paths); broken URLs fall back to a bundled cover. There is no upload storage. Ticketing, registration, payments, public accounts, password recovery, and advanced analytics are outside the agreed scope.
 

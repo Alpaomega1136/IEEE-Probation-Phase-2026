@@ -1,9 +1,9 @@
 .public-site {
-  --ink: #18201f;
-  --muted: #65716c;
-  --line: #ced5d0;
-  --signal: #e3ef69;
-  background: #fbfcf9;
+  --ink: #102d54;
+  --muted: #536b83;
+  --line: #c7d2dc;
+  --signal: #b8e9ff;
+  background: #ffffff;
   color: var(--ink);
 }
 .public-site h1,
@@ -24,7 +24,7 @@
   font-family: "Courier New", monospace;
 }
 .public-site .eyebrow {
-  color: #365249;
+  color: #274461;
   font-size: 11px;
 }
 .public-site .eyebrow > span {
@@ -38,11 +38,11 @@
   background: var(--ink);
 }
 .public-site .button-primary:hover {
-  background: #354d44;
+  background: #26415c;
 }
 .public-site .public-header {
-  background: #fbfcf9;
-  border-bottom: 1px solid #cbd2cc;
+  background: #ffffff;
+  border-bottom: 1px solid #c3cfda;
 }
 .public-site .nav-inner {
   min-height: 82px;
@@ -60,18 +60,11 @@
 .public-site .public-nav > a {
   isolation: isolate;
 }
-.public-site .brand strong {
-  color: var(--ink);
-}
-.public-site .brand-mark {
-  border-color: #a6b9ab;
-  color: #245340;
-}
 .public-site .hero {
   height: 590px;
   min-height: 0;
   max-height: none;
-  background: #162923;
+  background: #0b2f62;
 }
 .public-site .hero-image {
   object-position: 50% 48%;
@@ -79,9 +72,9 @@
 .public-site .hero-shade {
   background: linear-gradient(
     90deg,
-    #10251fe8 0%,
-    #10251f90 38%,
-    #10251f08 78%
+    #0c2c58e8 0%,
+    #0c2c5890 38%,
+    #0c2c5808 78%
   );
 }
 .public-site .hero-content {
@@ -97,7 +90,7 @@
   padding-bottom: 17px;
   font-size: 10px;
   text-transform: uppercase;
-  color: #edf3dd;
+  color: #dde8f3;
 }
 .public-site .hero h1 {
   margin-top: 37px;
@@ -128,11 +121,11 @@
 }
 .public-site .button-white {
   background: var(--signal);
-  color: #18201f;
+  color: #102d54;
   min-height: 48px;
 }
 .public-site .button-white:hover {
-  background: #f3ff89;
+  background: #d7f4ff;
 }
 .public-site .hero-caption {
   display: flex;
@@ -140,7 +133,7 @@
   margin-top: 28px;
   font-size: 10px;
   text-transform: uppercase;
-  color: #e3e9de;
+  color: #dde3ea;
 }
 .public-site .hero-caption > span + span::before {
   content: "+";
@@ -160,7 +153,7 @@
 .next-event-band {
   display: block;
   background: var(--signal);
-  border-bottom: 1px solid #c0cc53;
+  border-bottom: 1px solid #7ac7e9;
 }
 .next-event-inner {
   min-height: 88px;
@@ -181,7 +174,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #1d493b;
+  background: #126cbd;
 }
 .next-event-inner > strong {
   font-size: 17px;
@@ -212,13 +205,13 @@
   margin-top: 17px;
 }
 .public-site .text-link {
-  color: #234f40;
-  border-bottom: 1px solid #a6b7aa;
+  color: #213951;
+  border-bottom: 1px solid #8dafd0;
   padding-bottom: 6px;
 }
 .public-site .text-link:hover {
   text-decoration: none;
-  border-color: #234f40;
+  border-color: #213951;
 }
 .public-site .event-card {
   border: 0;
@@ -284,7 +277,7 @@
   margin-top: 5px;
 }
 .public-site .event-card-bottom {
-  color: #234f40;
+  color: #213951;
   font-size: 12px;
   border-bottom: 1px solid var(--line);
   border-top-style: dashed;
@@ -298,8 +291,8 @@
   font-size: 10px;
 }
 .public-site .status-upcoming {
-  background: #e8eee3;
-  color: #345a35;
+  background: #e3e9ee;
+  color: #294765;
 }
 .home-program .event-grid {
   grid-template-columns: 1.15fr 1fr;
@@ -340,8 +333,8 @@
   font-size: 26px;
 }
 .public-site .about-band {
-  background: #e8eee4;
-  border-block: 1px solid #c3cdbf;
+  background: #e8f7ff;
+  border-block: 1px solid #aec6de;
   position: relative;
 }
 .public-site .about-grid {
@@ -351,11 +344,11 @@
   font-size: 43px;
 }
 .public-site .about-grid > div + div {
-  border-left: 1px solid #becbb8;
+  border-left: 1px solid #a8c2db;
   padding-left: 40px;
 }
 .public-site .about-values {
-  border-top: 1px solid #c3cdbf;
+  border-top: 1px solid #aec6de;
   padding-top: 23px;
   margin-bottom: 0;
 }
@@ -402,36 +395,27 @@
   transform: translate(3px, -3px);
 }
 .archive-row:hover h3 {
-  color: #376048;
+  color: #2c4c6b;
 }
 .public-site .cta-band {
   background: var(--signal);
-  border-block: 1px solid #c3cd67;
+  border-block: 1px solid #7ac7e9;
   padding-block: 52px;
 }
 .public-site .cta-band h2 {
   font-size: 37px;
 }
 .public-site .public-footer {
-  background: #182720;
-  color: #e9efe8;
+  background: #edf8ff;
+  color: #102d54;
   padding-top: 50px;
 }
-.public-site .public-footer .brand strong,
-.public-site .public-footer .brand strong span {
-  color: #f0f4ec;
-}
-.public-site .public-footer .brand-mark {
-  color: var(--signal);
-  border-color: #6d846f;
-}
-.public-site .public-footer .brand small,
 .public-site .footer-top p {
-  color: #abbcb0;
+  color: #536b83;
 }
 .public-site .footer-bottom {
-  border-color: #3c5042;
-  color: #abbcb0;
+  border-color: #b9dff2;
+  color: #536b83;
 }
 .public-site .page-heading {
   padding-bottom: 30px;
@@ -448,7 +432,7 @@
 .public-site .filters select {
   border-radius: 0;
   background: transparent;
-  border-color: #aebcb1;
+  border-color: #96b5d4;
 }
 .public-site .detail-heading h1 {
   font-size: 48px;
@@ -539,7 +523,7 @@
     min-height: 74px;
   }
   .public-site .public-nav {
-    background: #fbfcf9;
+    background: #ffffff;
   }
   .public-site .hero {
     height: 495px;
@@ -551,7 +535,7 @@
     object-position: 62% center;
   }
   .public-site .hero-shade {
-    background: linear-gradient(90deg, #10251fe0, #10251f45);
+    background: linear-gradient(90deg, #0c2c58e0, #0c2c5845);
   }
   .public-site .hero h1 {
     font-size: 61px;
