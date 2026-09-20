@@ -25,10 +25,6 @@ export default async function Home() {
         />
         <div className="hero-shade" />
         <div className="container hero-content">
-          <div className="hero-dateline">
-            <span>Student branch / Bandung, ID</span>
-            <span>Engineering in good company</span>
-          </div>
           <h1 aria-label="IEEE ITB Events">
             <span>IEEE ITB</span>
             <span className="hero-word">
@@ -45,26 +41,11 @@ export default async function Home() {
           <Link href="/events" className="button button-white">
             Explore events <ArrowUpRight size={19} />
           </Link>
-          <div className="hero-caption">
-            <span>Learn together</span>
-            <span>Build what&apos;s next</span>
-          </div>
-        </div>
-        <div className="hero-index">
-          IEEE / ITB
-          <br />
-          Advancing Technology
-          <br />
-          for Humanity
         </div>
       </section>
       {nextEvent && (
         <Link className="next-event-band" href={`/events/${nextEvent.id}`}>
           <div className="container next-event-inner">
-            <span className="next-event-label">
-              <span />
-              Next on the calendar
-            </span>
             <strong>{nextEvent.title}</strong>
             <span className="next-event-date">
               {formatDate(nextEvent.date)}
@@ -77,15 +58,11 @@ export default async function Home() {
       <section className="section container home-program">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">
-              <span>01 / THE PROGRAM</span> Open minds, open doors
-            </p>
             <h2>
               Make room
               <br />
               for <em>what&apos;s next.</em>
             </h2>
-            <p>Find your next conversation, inspiration, or breakthrough.</p>
           </div>
           <Link href="/events?status=upcoming" className="text-link">
             All upcoming events <ArrowRight size={17} />
@@ -96,7 +73,6 @@ export default async function Home() {
       <section className="about-band">
         <div className="container about-grid">
           <div>
-            <p className="eyebrow">02 / THE COMMUNITY</p>
             <h2>
               Different minds.
               <br />
@@ -136,13 +112,11 @@ export default async function Home() {
       <section className="section container home-archive">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">03 / THE ARCHIVE</p>
             <h2>
               Good things
               <br />
               <em>happened here.</em>
             </h2>
-            <p>Conversations and experiences that brought us together.</p>
           </div>
           <Link href="/events?status=past" className="text-link">
             Past events <ArrowRight size={17} />
@@ -187,7 +161,6 @@ export default async function Home() {
       <section className="cta-band">
         <div className="container">
           <div>
-            <p className="eyebrow">Stay curious</p>
             <h2>Your next idea starts here.</h2>
           </div>
           <Link href="/events" className="button button-primary">

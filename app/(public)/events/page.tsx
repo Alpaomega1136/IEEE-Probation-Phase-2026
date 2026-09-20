@@ -18,9 +18,7 @@ export default async function EventsPage({
   return (
     <main id="main-content" className="container page-content">
       <div className="page-heading">
-        <p className="eyebrow">IEEE ITB Student Branch</p>
         <h1>Events & experiences</h1>
-        <p>Come with curiosity. Leave with something new.</p>
       </div>
       <EventFilters {...query} base="/events" />
       <EventGrid

@@ -8,9 +8,7 @@ export default function AboutPage() {
   return (
     <main id="main-content" className="container page-content">
       <div className="page-heading">
-        <p className="eyebrow">Our community</p>
         <h1>IEEE ITB Student Branch</h1>
-        <p>Bringing people and technology closer together.</p>
       </div>
       <EventImage
         src="/images/collaboration.jpg"
@@ -20,7 +18,6 @@ export default function AboutPage() {
       />
       <section className="about-grid section">
         <div>
-          <p className="eyebrow">Advancing Technology for Humanity</p>
           <h2>Curiosity connects us.</h2>
         </div>
         <div>

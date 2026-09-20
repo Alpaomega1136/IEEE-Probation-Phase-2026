@@ -17,7 +17,6 @@ export default function PublicLayout({
         <div className="container footer-top">
           <div>
             <Brand />
-            <p>Connecting minds. Advancing technology.</p>
           </div>
           <nav aria-label="Footer navigation">
             <Link href="/events">Events</Link>
@@ -26,11 +25,6 @@ export default function PublicLayout({
               Admin <ArrowUpRight size={14} />
             </Link>
           </nav>
-        </div>
-        <div className="container footer-bottom">
-          <span>IEEE ITB Student Branch</span>
-          <span>Bandung, Indonesia</span>
-          <span>Advancing Technology for Humanity</span>
         </div>
       </footer>
     </div>

@@ -56,7 +56,6 @@ export default async function EventDetail({ params }: Props) {
       </div>
       <div className="detail-grid">
         <section>
-          <p className="eyebrow">The experience</p>
           <h2>About this event</h2>
           <div
             className="event-description rich-text"
@@ -93,7 +92,6 @@ export default async function EventDetail({ params }: Props) {
               <dd>{event.location}</dd>
             </div>
           </dl>
-          <p>Hosted by IEEE ITB Student Branch</p>
           <Link href="/events" className="text-link">
             Explore more events <ArrowUpRight size={16} />
           </Link>

@@ -44,13 +44,16 @@ export function EventCard({ event }: { event: Event }) {
               year: undefined,
             })}
           </span>
+          <small>
+            {formatDate(event.date, {
+              day: undefined,
+              month: undefined,
+              year: "numeric",
+            })}
+          </small>
         </time>
         <div className="event-card-body">
           <div className="event-card-meta">
-            <span>
-              <CalendarDays size={14} />
-              {formatDate(event.date)}
-            </span>
             <StatusBadge status={event.status} />
           </div>
           <h3>{event.title}</h3>
