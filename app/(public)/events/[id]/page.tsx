@@ -11,6 +11,7 @@ import { eventService } from "@/lib/services/events";
 import { EventImage } from "@/components/event-image";
 import { StatusBadge } from "@/components/events";
 import { formatDate, formatTime } from "@/lib/events";
+import { cleanDescription, plainDescription } from "@/lib/description";
 
 export const dynamic = "force-dynamic";
 type Props = { params: Promise<{ id: string }> };
@@ -18,7 +19,9 @@ export async function generateMetadata({ params }: Props) {
   const event = await eventService.getById((await params).id);
   return {
     title: event?.title ?? "Event not found",
-    description: event?.description.slice(0, 160),
+    description: event
+      ? plainDescription(event.description).slice(0, 160)
+      : undefined,
   };
 }
 
@@ -55,7 +58,12 @@ export default async function EventDetail({ params }: Props) {
         <section>
           <p className="eyebrow">The experience</p>
           <h2>About this event</h2>
-          <div className="event-description">{event.description}</div>
+          <div
+            className="event-description rich-text"
+            dangerouslySetInnerHTML={{
+              __html: cleanDescription(event.description),
+            }}
+          />
           {event.status === "CANCELLED" && (
             <p className="notice warning">This event has been cancelled.</p>
           )}

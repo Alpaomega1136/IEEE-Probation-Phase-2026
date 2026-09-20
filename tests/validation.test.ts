@@ -21,6 +21,8 @@ test("event validation rejects invalid data and preserves optional image workflo
   for (const invalid of [
     { title: " " },
     { description: "" },
+    { description: "<p><br></p>" },
+    { description: "<script>alert(1)</script>" },
     { location: "" },
     { date: "not-a-date" },
     { date: null },
@@ -32,6 +34,7 @@ test("event validation rejects invalid data and preserves optional image workflo
     { imageUrl: "http://example.com/a.jpg" },
     { imageUrl: "/etc/passwd" },
     { imageUrl: "data:image/svg+xml,abc" },
+    { imageUrl: "/api/uploads/../../secret.jpg" },
     { description: "a".repeat(10001) },
     { title: "x".repeat(121) },
     { unauthorized: true },
@@ -46,6 +49,7 @@ test("event validation rejects invalid data and preserves optional image workflo
     "",
     "https://example.com/photo.jpg",
     "/images/conference.jpg",
+    "/api/uploads/123e4567-e89b-12d3-a456-426614174000.jpg",
   ]) {
     assert.equal(
       eventInputSchema.safeParse({ ...valid, imageUrl }).success,
@@ -60,6 +64,15 @@ test("event validation rejects invalid data and preserves optional image workflo
   );
   assert.equal(eventQuerySchema.parse({ page: "2" }).page, 2);
   assert.equal(eventQuerySchema.safeParse({ page: "-1" }).success, false);
+  const rich = eventInputSchema.parse({
+    ...valid,
+    description:
+      "<h2>Agenda</h2><p><strong>Hello</strong><img src=x onerror=alert(1)> world</p>",
+  });
+  assert.equal(
+    rich.description,
+    "<h2>Agenda</h2><p><strong>Hello</strong> world</p>",
+  );
 });
 test("WIB date round-trip is independent of host timezone", () => {
   const input = "2026-10-24T09:00";

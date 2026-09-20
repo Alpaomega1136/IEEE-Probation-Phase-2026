@@ -694,6 +694,39 @@ p {
   line-height: 1.95;
   color: #526068;
 }
+.rich-text p {
+  margin: 0 0 1em;
+}
+.rich-text h2,
+.rich-text h3 {
+  font-weight: 650;
+  line-height: 1.35;
+  color: var(--ink);
+  margin: 1.4em 0 0.5em;
+}
+.rich-text h2 {
+  font-size: 1.45em;
+}
+.rich-text h3 {
+  font-size: 1.2em;
+}
+.rich-text ul,
+.rich-text ol {
+  padding-left: 1.5em;
+  margin: 0 0 1em;
+}
+.rich-text ul {
+  list-style: disc;
+}
+.rich-text ol {
+  list-style: decimal;
+}
+.rich-text blockquote {
+  border-left: 3px solid #6dc9eb;
+  padding-left: 1em;
+  margin: 1em 0;
+  color: #3b658f;
+}
 .event-info {
   border-left: 1px solid var(--line);
   padding-left: 30px;

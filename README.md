@@ -9,12 +9,13 @@ A fullstack event catalogue and administration workspace for the IEEE ITB probat
 - Admin sign-in and a single event management page with create/edit/delete workflows.
 - A top navigation with one Create event action and a profile sign-out menu, plus thumbnail event lists, status tabs, mobile event rows, and a live preview in the shared create/edit form.
 - A keyboard-accessible delete confirmation dialog, field validation, progress indicators, success messages, and loading/empty/error/not-found states.
+- A visual description editor (headings, emphasis, lists, quotes, undo/redo) and a cover-image dialog for photo upload or HTTPS URL.
 - PostgreSQL persistence, an initial migration, and an idempotent development seed.
 - Responsive public and admin navigation.
 
 ## Stack and Architecture
 
-Next.js App Router and TypeScript provide UI and API endpoints in one application. Server Components read through a small event service; interactive forms call Route Handlers. Prisma provides typed PostgreSQL queries and migration history. Shared Zod schemas validate browser and server input. NextAuth v4 Credentials handles encrypted JWT session cookies, and bcrypt hashes passwords. Tailwind CSS and a shared stylesheet provide the visual foundation; Lucide supplies icons.
+Next.js App Router and TypeScript provide UI and API endpoints in one application. Server Components read through a small event service; interactive forms call Route Handlers. Prisma provides typed PostgreSQL queries and migration history. Shared Zod schemas validate browser and server input. Tiptap provides the rich-text editing controls; sanitize-html limits stored and rendered markup to supported formatting. NextAuth v4 Credentials handles encrypted JWT session cookies, and bcrypt hashes passwords. Tailwind CSS and a shared stylesheet provide the visual foundation; Lucide supplies icons.
 
 ```text
 Browser -> Next.js pages / Route Handlers
@@ -74,11 +75,16 @@ If port 3000 is occupied, update `NEXTAUTH_URL` and run `npm run dev -- --port 3
 | `POST /api/events` | Admin creates an event |
 | `PATCH /api/events/[id]` | Admin updates one or more editable fields |
 | `DELETE /api/events/[id]` | Admin deletes an event |
+| `POST /api/uploads` | Admin uploads a cover image |
+| `GET /api/uploads/[name]` | Public uploaded cover image |
+| `DELETE /api/uploads/[name]` | Admin removes an uploaded image |
 | `/api/auth/*` | NextAuth session, CSRF, credentials, and sign-out endpoints |
 
 The list endpoint accepts `search`, `status`, and `page`. Status values are `all`, `upcoming` (UPCOMING or ONGOING), `past` (COMPLETED), or an exact enum value. The list response is `{ data: Event[], meta: { total, page, pages } }`. Invalid query values return 400. Public page URLs with invalid query parameters fall back to defaults. Pages beyond the available results are clamped to the last page.
 
-Create requires `title`, `description`, `date` (ISO datetime including timezone), `location`, and `status`; `imageUrl` is optional. PATCH accepts at least one of these fields. Empty image URLs clear the cover. Unknown fields are rejected. Mutations require the session cookie, a same-origin `Origin` header, and JSON bodies for POST/PATCH. Errors use `{ error: { code, message, fields? } }`, with 400, 401, 403, 404, or 500 status codes.
+Create requires `title`, `description`, `date` (ISO datetime including timezone), `location`, and `status`; `imageUrl` is optional. PATCH accepts at least one of these fields. Empty image URLs clear the cover. Unknown fields are rejected. Mutations require the session cookie and a same-origin `Origin` header. Event POST/PATCH use JSON; image upload POST uses multipart form data with an `image` file. Errors use `{ error: { code, message, fields? } }`, with 400, 401, 403, 404, or 500 status codes.
+
+Upload accepts JPEG, PNG, or WebP up to 5 MB. Files are stored in ignored `.local/uploads` and referenced from the event record. Replacing or deleting an event cover removes the previous local file. Back up this directory along with PostgreSQL; a production deployment needs a persistent writable volume at that path (or an object-storage replacement), including when running multiple instances.
 
 Event dates are stored as UTC and displayed/edited in Asia/Jakarta (WIB). Status is explicitly set by the admin; it is not automatically changed when an event date passes. Mutations revalidate the application layout and refresh the admin interface, so public results reflect persisted changes.
 
@@ -104,13 +110,13 @@ For browser tests, first run `npx playwright install chromium`, seed the develop
 
 ## Deployment
 
-Provision PostgreSQL and configure `DATABASE_URL`, `AUTH_SECRET`, and `NEXTAUTH_URL` for the HTTPS deployment origin. Run `npm ci`, `npm run prisma:generate`, `npm run db:deploy`, and `npm run build`, then serve with `npm start`. Provision the admin deliberately using seed variables. The development seed includes fictional events; remove sample records through the admin workspace before publishing real data. Never publish `.env`, `.local`, test artifacts, or database dumps.
+Provision PostgreSQL, persistent storage for `.local/uploads`, and configure `DATABASE_URL`, `AUTH_SECRET`, and `NEXTAUTH_URL` for the HTTPS deployment origin. Run `npm ci`, `npm run prisma:generate`, `npm run db:deploy`, and `npm run build`, then serve with `npm start`. Provision the admin deliberately using seed variables. The development seed includes fictional events; remove sample records through the admin workspace before publishing real data. Never publish `.env`, `.local`, test artifacts, or database dumps.
 
 ## Assets and Scope
 
-The six seeded events are demonstration data, not verified IEEE schedules. Bundled cover photos are illustrative Unsplash images, not official IEEE event documentation. Replace them with approved event artwork using the image URL field. Credits and original URLs are in `public/images/CREDITS.md`. The IEEE ITB Student Branch logo was provided for this project; the blue palette is based on the supplied visual reference.
+The six seeded events are demonstration data, not verified IEEE schedules. Bundled cover photos are illustrative Unsplash images, not official IEEE event documentation. Replace them with approved event artwork using the cover-image picker. Credits and original URLs are in `public/images/CREDITS.md`. The IEEE ITB Student Branch logo was provided for this project; the blue palette is based on the supplied visual reference.
 
-Images use HTTPS URLs (plus three bundled sample image paths); broken URLs fall back to a bundled cover. There is no upload storage. Ticketing, registration, payments, public accounts, password recovery, and advanced analytics are outside the agreed scope.
+Images use local uploads or HTTPS URLs (plus three bundled sample image paths); broken URLs fall back to a bundled cover. Ticketing, registration, payments, public accounts, password recovery, and advanced analytics are outside the agreed scope.
 
 Sessions expire after 8 hours and sign-out removes the browser session cookie. Deleted administrators are denied access even with an existing token. Login throttling is bounded and process-local; a deployment with multiple server instances should replace it with a shared store. JWT sessions do not provide per-session server-side revocation. This application has been prepared and verified locally; hosted deployment and external account configuration are separate.
 

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { cleanDescription, hasDescriptionText } from "@/lib/description";
 
 export const eventStatusSchema = z.enum([
   "UPCOMING",
@@ -15,6 +16,8 @@ const imageUrlSchema = z
     if (!value) return true;
     if (/^\/images\/(conference|workshop|collaboration)\.jpg$/.test(value))
       return true;
+    if (/^\/api\/uploads\/[a-f0-9-]{36}\.(jpg|png|webp)$/.test(value))
+      return true;
     try {
       return new URL(value).protocol === "https:";
     } catch {
@@ -26,7 +29,13 @@ const imageUrlSchema = z
 export const eventInputSchema = z
   .object({
     title: z.string().trim().min(1, "Title is required").max(120),
-    description: z.string().trim().min(1, "Description is required").max(10000),
+    description: z
+      .string()
+      .trim()
+      .min(1, "Description is required")
+      .max(10000)
+      .transform(cleanDescription)
+      .refine(hasDescriptionText, "Description is required"),
     date: z
       .union([z.iso.datetime({ offset: true }), z.date()])
       .pipe(z.coerce.date()),

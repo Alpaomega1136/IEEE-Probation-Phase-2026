@@ -13,6 +13,29 @@ test("API pagination, partial update, and validation retain stored data", async 
     .fill(process.env.SEED_ADMIN_PASSWORD!);
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await expect(page).toHaveURL(/\/admin\/events$/);
+  const fakeImage = {
+    image: {
+      name: "fake.png",
+      mimeType: "image/png",
+      buffer: Buffer.from("not an image"),
+    },
+  };
+  expect(
+    (
+      await page.request.post("/api/uploads", {
+        multipart: fakeImage,
+        headers: { Origin: origin },
+      })
+    ).status(),
+  ).toBe(400);
+  expect(
+    (
+      await page.request.post("/api/uploads", {
+        multipart: fakeImage,
+        headers: { Origin: "https://untrusted.example" },
+      })
+    ).status(),
+  ).toBe(403);
   await page.goto("/admin/events?notice=__proto__");
   await expect(
     page.getByRole("heading", { name: "Events", exact: true }),

@@ -2,15 +2,19 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   LoaderCircle,
   Save,
   MapPin,
   CalendarDays,
   ImageIcon,
+  Upload,
+  Link2,
+  X,
 } from "lucide-react";
 import { EventImage } from "@/components/event-image";
+import { RichTextEditor } from "@/components/rich-text-editor";
 import { StatusBadge } from "@/components/events";
 import { eventInputSchema } from "@/lib/validations/event";
 import {
@@ -33,23 +37,33 @@ type InitialEvent = {
 
 export function EventForm({ event }: { event?: InitialEvent }) {
   const router = useRouter();
+  const dialog = useRef<HTMLDialogElement>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
+  const [fields, setFields] = useState<Record<string, string[] | undefined>>(
+    {},
+  );
+  const [description, setDescription] = useState(event?.description ?? "");
+  const [imageUrl, setImageUrl] = useState(event?.imageUrl ?? "");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [localPreview, setLocalPreview] = useState("");
+  const [imageMode, setImageMode] = useState<"upload" | "url">("upload");
+  const [urlDraft, setUrlDraft] = useState("");
+  const [pickerError, setPickerError] = useState("");
   const [preview, setPreview] = useState({
     title: event?.title ?? "",
     location: event?.location ?? "",
     date: event?.date ?? "",
     status: (event?.status ?? "UPCOMING") as EventStatus,
-    imageUrl: event?.imageUrl ?? "",
   });
+  useEffect(() => {
+    return () => {
+      if (localPreview) URL.revokeObjectURL(localPreview);
+    };
+  }, [localPreview]);
+
   const previewDate = new Date(fromDateTimeInput(preview.date));
   const hasDate = !Number.isNaN(previewDate.getTime());
-  const validImage = eventInputSchema.shape.imageUrl.safeParse(
-    preview.imageUrl,
-  ).success;
-  const [fields, setFields] = useState<Record<string, string[] | undefined>>(
-    {},
-  );
   const fieldError = (name: string) =>
     fields[name] ? (
       <p className="field-error" id={`${name}-error`}>
@@ -60,46 +74,83 @@ export function EventForm({ event }: { event?: InitialEvent }) {
     "aria-invalid": !!fields[name],
     "aria-describedby": fields[name] ? `${name}-error` : undefined,
   });
+
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
     setFields({});
     const raw = Object.fromEntries(new FormData(e.currentTarget));
-    const input = { ...raw, date: fromDateTimeInput(String(raw.date)) };
+    const input = {
+      ...raw,
+      description,
+      imageUrl: imageFile ? "" : imageUrl,
+      date: fromDateTimeInput(String(raw.date)),
+    };
     const parsed = eventInputSchema.safeParse(input);
     if (!parsed.success) {
       const errors = parsed.error.flatten().fieldErrors;
       setFields(errors);
       const name = Object.keys(errors)[0];
-      (e.currentTarget.elements.namedItem(name) as HTMLElement | null)?.focus();
+      if (name === "description")
+        document
+          .querySelector<HTMLElement>(".rich-editor .ProseMirror")
+          ?.focus();
+      else if (name === "imageUrl")
+        document.getElementById("cover-picker")?.focus();
+      else
+        (
+          e.currentTarget.elements.namedItem(name) as HTMLElement | null
+        )?.focus();
       return;
     }
     setPending(true);
+    let uploadedUrl = "";
     try {
+      if (imageFile) {
+        const data = new FormData();
+        data.set("image", imageFile);
+        const upload = await fetch("/api/uploads", {
+          method: "POST",
+          body: data,
+        });
+        const result = await upload.json();
+        if (!upload.ok)
+          throw new Error(
+            result.error?.message || "Could not upload the image.",
+          );
+        uploadedUrl = result.data.url;
+      }
       const response = await fetch(
         event ? `/api/events/${event.id}` : "/api/events",
         {
           method: event ? "PATCH" : "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(parsed.data),
+          body: JSON.stringify({
+            ...parsed.data,
+            imageUrl: uploadedUrl || parsed.data.imageUrl,
+          }),
         },
       );
-      const result = await response.json();
       if (!response.ok) {
-        setError(result.error?.message || "Could not save this event.");
+        const result = await response.json();
         setFields(result.error?.fields || {});
-        setPending(false);
-        return;
+        throw new Error(result.error?.message || "Could not save this event.");
       }
+      uploadedUrl = "";
       router.push(`/admin/events?notice=${event ? "updated" : "created"}`);
       router.refresh();
-    } catch {
+    } catch (reason) {
       setError(
-        "Unable to connect. Your changes have not been saved. Please try again.",
+        reason instanceof Error
+          ? reason.message
+          : "Unable to connect. Please try again.",
       );
       setPending(false);
+      if (uploadedUrl)
+        await fetch(uploadedUrl, { method: "DELETE" }).catch(() => {});
     }
   }
+
   return (
     <form
       className="event-form"
@@ -110,20 +161,17 @@ export function EventForm({ event }: { event?: InitialEvent }) {
         const target = e.target;
         if (
           target instanceof HTMLInputElement ||
-          target instanceof HTMLTextAreaElement ||
           target instanceof HTMLSelectElement
         ) {
-          const name = target.name;
-          if (fields[name])
-            setFields((current) => ({ ...current, [name]: undefined }));
+          if (fields[target.name])
+            setFields((current) => ({ ...current, [target.name]: undefined }));
         }
-        setPreview((current) => ({
+        setPreview({
           title: String(values.get("title") ?? ""),
           location: String(values.get("location") ?? ""),
           date: String(values.get("date") ?? ""),
           status: String(values.get("status") ?? "UPCOMING") as EventStatus,
-          imageUrl: current.imageUrl,
-        }));
+        });
       }}
     >
       {error && (
@@ -136,7 +184,6 @@ export function EventForm({ event }: { event?: InitialEvent }) {
         <div className="form-section">
           <div className="form-section-heading">
             <h2>Event details</h2>
-            <p>The essentials for your event.</p>
           </div>
           <div className="form-fields">
             <div className="field">
@@ -154,49 +201,6 @@ export function EventForm({ event }: { event?: InitialEvent }) {
               />
               {fieldError("title")}
             </div>
-            <div className="field">
-              <label htmlFor="description">
-                Description <span>*</span>
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                defaultValue={event?.description}
-                placeholder="What can attendees look forward to?"
-                rows={7}
-                required
-                maxLength={10000}
-                {...invalid("description")}
-              />
-              {fieldError("description")}
-            </div>
-            <div className="field">
-              <label htmlFor="imageUrl">
-                Cover image URL <span className="optional">Optional</span>
-              </label>
-              <input
-                id="imageUrl"
-                name="imageUrl"
-                type="text"
-                defaultValue={event?.imageUrl ?? ""}
-                onBlur={(e) => {
-                  const imageUrl = e.currentTarget.value.trim();
-                  setPreview((current) => ({ ...current, imageUrl }));
-                }}
-                placeholder="https://example.com/event.jpg"
-                maxLength={2048}
-                {...invalid("imageUrl")}
-              />
-              {fieldError("imageUrl")}
-            </div>
-          </div>
-        </div>
-        <div className="form-section">
-          <div className="form-section-heading">
-            <h2>When & where</h2>
-            <p>Schedule, venue, and event status.</p>
-          </div>
-          <div className="form-fields">
             <div className="form-row">
               <div className="field">
                 <label htmlFor="date">
@@ -246,6 +250,63 @@ export function EventForm({ event }: { event?: InitialEvent }) {
               />
               {fieldError("location")}
             </div>
+            <div className="field">
+              <label>
+                Description <span>*</span>
+              </label>
+              <RichTextEditor
+                value={description}
+                onChange={(value) => {
+                  setDescription(value);
+                  setFields((current) => ({
+                    ...current,
+                    description: undefined,
+                  }));
+                }}
+                invalid={!!fields.description}
+              />
+              {fieldError("description")}
+            </div>
+            <div className="field">
+              <span className="field-label">
+                Cover image <span className="optional">Optional</span>
+              </span>
+              <div className="cover-picker-row">
+                <button
+                  id="cover-picker"
+                  type="button"
+                  className="button button-secondary"
+                  onClick={() => {
+                    setUrlDraft(imageFile ? "" : imageUrl);
+                    setPickerError("");
+                    dialog.current?.showModal();
+                  }}
+                >
+                  <ImageIcon size={16} />{" "}
+                  {imageUrl || imageFile ? "Change image" : "Choose image"}
+                </button>
+                {(imageUrl || imageFile) && (
+                  <button
+                    type="button"
+                    className="icon-button"
+                    aria-label="Remove cover image"
+                    title="Remove cover image"
+                    onClick={() => {
+                      setImageFile(null);
+                      setLocalPreview("");
+                      setImageUrl("");
+                    }}
+                  >
+                    <X size={17} />
+                  </button>
+                )}
+                <span>
+                  {imageFile?.name ||
+                    (imageUrl ? "Image selected" : "No image selected")}
+                </span>
+              </div>
+              {fieldError("imageUrl")}
+            </div>
           </div>
         </div>
       </fieldset>
@@ -256,8 +317,8 @@ export function EventForm({ event }: { event?: InitialEvent }) {
         </div>
         <div className="preview-event">
           <EventImage
-            key={preview.imageUrl}
-            src={validImage ? preview.imageUrl : null}
+            key={localPreview || imageUrl}
+            src={localPreview || imageUrl || null}
             alt="Event cover preview"
           />
           <div className="preview-event-body">
@@ -316,6 +377,122 @@ export function EventForm({ event }: { event?: InitialEvent }) {
           {pending ? "Saving..." : event ? "Save changes" : "Create event"}
         </button>
       </div>
+      <dialog
+        ref={dialog}
+        className="image-dialog"
+        aria-labelledby="image-dialog-title"
+        onClose={() => setPickerError("")}
+      >
+        <div className="image-dialog-header">
+          <h2 id="image-dialog-title">Choose cover image</h2>
+          <button
+            type="button"
+            className="icon-button"
+            aria-label="Close image dialog"
+            onClick={() => dialog.current?.close()}
+          >
+            <X size={18} />
+          </button>
+        </div>
+        <div className="image-mode" role="group" aria-label="Image source">
+          <button
+            type="button"
+            className={imageMode === "upload" ? "active" : ""}
+            aria-pressed={imageMode === "upload"}
+            onClick={() => {
+              setImageMode("upload");
+              setPickerError("");
+            }}
+          >
+            <Upload size={16} /> Upload photo
+          </button>
+          <button
+            type="button"
+            className={imageMode === "url" ? "active" : ""}
+            aria-pressed={imageMode === "url"}
+            onClick={() => {
+              setImageMode("url");
+              setPickerError("");
+            }}
+          >
+            <Link2 size={16} /> Image URL
+          </button>
+        </div>
+        {imageMode === "upload" ? (
+          <div className="field" key="upload">
+            <label htmlFor="image-file">
+              Photo (JPEG, PNG, or WebP; max 5 MB)
+            </label>
+            <input
+              id="image-file"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                if (
+                  file.size > 5 * 1024 * 1024 ||
+                  !["image/jpeg", "image/png", "image/webp"].includes(file.type)
+                ) {
+                  setPickerError(
+                    "Choose a JPEG, PNG, or WebP image smaller than 5 MB.",
+                  );
+                  return;
+                }
+                setImageFile(file);
+                setLocalPreview(URL.createObjectURL(file));
+                setImageUrl("");
+                setPickerError("");
+                dialog.current?.close();
+              }}
+            />
+          </div>
+        ) : (
+          <div className="field" key="url">
+            <label htmlFor="image-link">Image URL (HTTPS)</label>
+            <input
+              id="image-link"
+              type="url"
+              value={urlDraft}
+              placeholder="https://example.com/event.jpg"
+              onChange={(e) => setUrlDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  document.getElementById("apply-image-url")?.click();
+                }
+              }}
+            />
+            <button
+              id="apply-image-url"
+              type="button"
+              className="button button-primary"
+              onClick={() => {
+                const url = urlDraft.trim();
+                if (
+                  !url ||
+                  !eventInputSchema.shape.imageUrl.safeParse(url).success
+                ) {
+                  setPickerError("Enter a valid HTTPS image URL.");
+                  return;
+                }
+                setImageUrl(url);
+                setImageFile(null);
+                setLocalPreview("");
+                setFields((current) => ({ ...current, imageUrl: undefined }));
+                dialog.current?.close();
+              }}
+            >
+              Use image
+            </button>
+          </div>
+        )}
+        {pickerError && (
+          <p className="field-error" role="alert">
+            {pickerError}
+          </p>
+        )}
+      </dialog>
     </form>
   );
 }

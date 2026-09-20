@@ -52,6 +52,7 @@ test("unauthenticated routes and mutations are protected; public API is safe", a
     ["POST", "/api/events"],
     ["PATCH", "/api/events/missing"],
     ["DELETE", "/api/events/missing"],
+    ["POST", "/api/uploads"],
   ]) {
     const response = await request.fetch(path, {
       method,
@@ -197,19 +198,39 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
       page.getByText("Title is required", { exact: true }),
     ).not.toBeVisible();
     await page
-      .getByLabel("Description", { exact: false })
+      .getByLabel("Description", { exact: true })
       .fill("A real database-backed event created during the acceptance test.");
+    await page.getByRole("combobox", { name: "Text style" }).selectOption("h2");
     await page.getByLabel("Date & time (WIB)").fill("2026-12-01T09:00");
     await page.getByLabel("Location", { exact: false }).fill("Test venue, ITB");
+    await page.getByRole("button", { name: "Choose image" }).click();
+    await page.getByRole("button", { name: "Image URL" }).click();
     await page
-      .getByLabel("Cover image URL", { exact: false })
-      .fill("/images/workshop.jpg");
-    await page.getByLabel("Cover image URL", { exact: false }).press("Tab");
+      .getByLabel("Image URL (HTTPS)")
+      .fill("http://example.com/image.jpg");
+    await page.getByRole("button", { name: "Use image" }).click();
+    await expect(
+      page.getByText("Enter a valid HTTPS image URL."),
+    ).toBeVisible();
+    await page
+      .getByLabel("Image URL (HTTPS)")
+      .fill("https://example.com/image.jpg");
+    await page.getByRole("button", { name: "Use image" }).click();
+    await expect(
+      page
+        .getByRole("complementary", { name: "Event preview" })
+        .getByRole("img"),
+    ).toHaveAttribute("src", "https://example.com/image.jpg");
+    await page.getByRole("button", { name: "Change image" }).click();
+    await page.getByRole("button", { name: "Upload photo" }).click();
+    await page
+      .getByLabel("Photo (JPEG, PNG, or WebP; max 5 MB)")
+      .setInputFiles("public/images/workshop.jpg");
     await expect(
       page
         .getByRole("complementary", { name: "Event preview" })
         .getByRole("img", { name: "Event cover preview" }),
-    ).toHaveAttribute("src", /\/images\/workshop\.jpg$/);
+    ).toHaveAttribute("src", /^blob:/);
     await expect(
       page
         .getByRole("complementary", { name: "Event preview" })
@@ -257,6 +278,9 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
     id = created.data[0]?.id;
     expect(id).toBeTruthy();
     expect(created.data[0].date).toBe("2026-12-01T02:00:00.000Z");
+    const uploadedImage = created.data[0].imageUrl;
+    expect(uploadedImage).toMatch(/^\/api\/uploads\//);
+    expect((await request.get(uploadedImage)).status()).toBe(200);
     await page.reload();
     await page
       .getByRole("link", { name: `Edit ${title}`, exact: true })
@@ -280,6 +304,11 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
       page.getByRole("heading", { name: `${title} updated`, exact: true }),
     ).toBeVisible();
     await expect(page.getByText("09:00 WIB", { exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("heading", {
+        name: "A real database-backed event created during the acceptance test.",
+      }),
+    ).toBeVisible();
     expect(
       (
         await page.request.patch(`/api/events/${id}`, {
@@ -322,6 +351,7 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
       "Event deleted successfully",
     );
     expect((await request.get(`/api/events/${id}`)).status()).toBe(404);
+    expect((await request.get(uploadedImage)).status()).toBe(404);
   } finally {
     if (id)
       await page.request.delete(`/api/events/${id}`, {
