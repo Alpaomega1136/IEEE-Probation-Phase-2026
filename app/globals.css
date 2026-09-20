@@ -588,16 +588,25 @@ p {
   margin-top: 24px;
   border-top: 1px solid var(--line);
   display: flex;
-  justify-content: space-between;
-  gap: 15px;
+  justify-content: center;
+  gap: 18px;
   align-items: center;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
 }
 .pagination nav {
   display: flex;
-  gap: 14px;
+  gap: 18px;
   align-items: center;
+  justify-content: center;
+}
+.pagination .icon-button {
+  width: 42px;
+  height: 42px;
+}
+.pagination .icon-button svg {
+  width: 21px;
+  height: 21px;
 }
 .empty-state {
   padding: 65px 20px;

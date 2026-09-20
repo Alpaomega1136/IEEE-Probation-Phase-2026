@@ -1,3 +1,5 @@
+"use client";
+
 import { Search, X } from "lucide-react";
 import Link from "next/link";
 
@@ -14,6 +16,8 @@ export function EventFilters({
   admin?: boolean;
   view?: string;
 }) {
+  const clearHref =
+    view && admin ? `${base}?${new URLSearchParams({ view })}` : base;
   return (
     <form action={base} className="filters" role="search">
       <div className="search-input">
@@ -38,35 +42,26 @@ export function EventFilters({
           <Search size={17} />
         </button>
       </div>
-      {admin ? (
-        <>
-          <input type="hidden" name="status" value={status} />
-          {view && <input type="hidden" name="view" value={view} />}
-        </>
-      ) : (
-        <>
-          <label className="sr-only" htmlFor="event-status">
-            Filter by status
-          </label>
-          <select
-            id="event-status"
-            name="status"
-            defaultValue={status}
-            aria-label="Filter by status"
-          >
-            <option value="all">All events</option>
-            <option value="upcoming">Upcoming & ongoing</option>
-            <option value="past">Past events</option>
-            <option value="CANCELLED">Cancelled</option>
-          </select>
-        </>
-      )}
-      <button className="button button-secondary" type="submit">
-        {admin ? "Search" : "Apply"}
-      </button>
+      {view && <input type="hidden" name="view" value={view} />}
+      <label className="sr-only" htmlFor="event-status">
+        Filter by status
+      </label>
+      <select
+        id="event-status"
+        name="status"
+        defaultValue={status}
+        aria-label="Filter by status"
+        onChange={(event) => event.currentTarget.form?.requestSubmit()}
+      >
+        <option value="all">All events</option>
+        <option value="upcoming">Upcoming & ongoing</option>
+        {admin && <option value="ONGOING">Ongoing</option>}
+        <option value="past">Completed</option>
+        <option value="CANCELLED">Cancelled</option>
+      </select>
       {(search || status !== "all") && (
         <Link
-          href={base}
+          href={clearHref}
           className="icon-button"
           aria-label="Clear filters"
           title="Clear filters"

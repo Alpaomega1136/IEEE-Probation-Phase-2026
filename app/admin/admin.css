@@ -217,16 +217,20 @@
 .admin-list-tools {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 16px;
   margin-bottom: 20px;
 }
 .admin-list-tools .filters {
-  flex: 1;
+  flex: 0 1 auto;
   margin-bottom: 0;
+}
+.admin-list-tools > .button {
+  flex-shrink: 0;
 }
 .view-toggle {
   display: inline-flex;
+  margin-left: auto;
   padding: 3px;
   border: 1px solid #dce5ed;
   border-radius: 7px;
@@ -248,7 +252,7 @@
 }
 .admin-shell .pagination {
   margin-top: 20px;
-  font-size: 11px;
+  font-size: 14px;
   color: #6693c0;
 }
 .admin-shell .back-link {
@@ -774,8 +778,12 @@
     flex-direction: column;
     gap: 12px;
   }
+  .admin-list-tools > .button {
+    width: 100%;
+  }
   .view-toggle {
     align-self: flex-end;
+    margin-left: 0;
   }
   .admin-shell .search-input {
     max-width: none;

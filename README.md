@@ -5,9 +5,9 @@ Mini fullstack event management application for the IEEE ITB Student Branch Full
 ## Completed Features
 
 - Public home, event list, event detail, and About pages.
-- Public search, status filtering, pagination, empty states, loading states, not-found/error states, and responsive desktop/mobile layouts.
+- Public search, auto-updating status filtering, centered pagination, empty states, loading states, not-found/error states, and responsive desktop/mobile layouts.
 - Admin login with credentials authentication.
-- Protected admin event dashboard.
+- Protected admin event dashboard with row and card views.
 - Create, edit, and delete event workflows.
 - Delete confirmation dialog to prevent accidental removal.
 - Event form validation on the client and server.
@@ -15,7 +15,7 @@ Mini fullstack event management application for the IEEE ITB Student Branch Full
 - Cover images from upload or HTTPS URL.
 - PostgreSQL persistence for admin users and events.
 - API routes for event listing, detail, create, update, delete, and uploads.
-- README, `.env.example`, Prisma schema, migration, seed, and automated tests.
+- README, `.env.example`, Prisma schema, migration, 30-event seed data, and automated tests.
 
 ## Architecture
 
@@ -149,7 +149,7 @@ Errors return a consistent JSON shape:
 | `npm run test:e2e` | Playwright end-to-end tests. |
 | `npm run test:recovery` | Database/login failure recovery checks. |
 | `npm run db:deploy` | Apply migrations. |
-| `npm run db:seed` | Seed admin and sample events. |
+| `npm run db:seed` | Seed admin and reset sample events. |
 | `npm run db:stop` | Stop local isolated PostgreSQL. |
 
 ## Testing Coverage
@@ -167,7 +167,7 @@ Automated checks cover:
 
 ## Known Limitations
 
-- Seeded events are demo data, not official IEEE schedules.
+- Seeded events are 30 demo records, not official IEEE schedules.
 - Uploaded files are stored in ignored `.local/uploads`; production needs persistent storage or object storage.
 - Images uploaded into an abandoned unsaved description draft can remain on disk and may need periodic cleanup.
 - Login throttling is process-local; a multi-instance deployment should use shared rate limiting.

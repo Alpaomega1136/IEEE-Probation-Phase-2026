@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CheckCircle2, Grid3X3, List } from "lucide-react";
+import { CheckCircle2, Grid3X3, List, Plus } from "lucide-react";
 import { requireAdminPage } from "@/lib/auth/session";
 import { eventService } from "@/lib/services/events";
 import { eventQuerySchema } from "@/lib/validations/event";
@@ -24,13 +24,6 @@ export default async function AdminEvents({
     ["updated", "Event updated successfully."],
     ["deleted", "Event deleted successfully."],
   ]).get(String(params.notice));
-  const tabs = [
-    { value: "all", label: "All events" },
-    { value: "upcoming", label: "Upcoming" },
-    { value: "ONGOING", label: "Ongoing" },
-    { value: "past", label: "Completed" },
-    { value: "CANCELLED", label: "Cancelled" },
-  ];
   return (
     <>
       <div className="admin-heading">
@@ -44,25 +37,12 @@ export default async function AdminEvents({
           {notice}
         </div>
       )}
-      <nav className="admin-status-tabs" aria-label="Event status">
-        {tabs.map(({ value, label }) => (
-          <Link
-            key={value}
-            href={`/admin/events?${new URLSearchParams({ status: value, search: query.search, view })}`}
-            aria-current={
-              query.status === value ||
-              (value === "past" && query.status === "COMPLETED") ||
-              (value === "upcoming" && query.status === "UPCOMING")
-                ? "page"
-                : undefined
-            }
-          >
-            {label}
-          </Link>
-        ))}
-      </nav>
       <div className="admin-list-tools">
         <EventFilters {...query} base="/admin/events" admin view={view} />
+        <Link href="/admin/events/new" className="button button-primary">
+          <Plus size={18} />
+          <span>Create event</span>
+        </Link>
         <div className="view-toggle" aria-label="Event layout">
           <Link
             href={`/admin/events?${new URLSearchParams({ search: query.search, status: query.status, view: "list" })}`}
@@ -93,7 +73,6 @@ export default async function AdminEvents({
         page={meta.page}
         base="/admin/events"
         view={view}
-        showTotal={false}
       />
     </>
   );

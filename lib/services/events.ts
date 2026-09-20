@@ -83,7 +83,7 @@ export const eventService = {
         take: 3,
       }),
       prisma.event.findMany({
-        where: { status: { in: ["COMPLETED", "CANCELLED"] } },
+        where: { status: "COMPLETED" },
         orderBy: { date: "desc" },
         take: 3,
       }),

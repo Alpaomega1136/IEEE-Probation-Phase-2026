@@ -104,23 +104,20 @@ export function EmptyState({ filtered = false }: { filtered?: boolean }) {
 export function Pagination({
   page,
   pages,
-  total,
   base,
   search,
   status,
   view,
-  showTotal = true,
 }: {
   page: number;
   pages: number;
-  total: number;
+  total?: number;
   base: string;
   search: string;
   status: string;
   view?: string;
-  showTotal?: boolean;
 }) {
-  if (!showTotal && pages <= 1) return null;
+  if (pages <= 1) return null;
   const href = (value: number) => {
     const params = new URLSearchParams({ search, status, page: String(value) });
     if (view) params.set("view", view);
@@ -128,11 +125,6 @@ export function Pagination({
   };
   return (
     <div className="pagination">
-      {showTotal && (
-        <span>
-          {total} {total === 1 ? "event" : "events"}
-        </span>
-      )}
       {pages > 1 && (
         <nav aria-label="Pagination">
           {page > 1 ? (
