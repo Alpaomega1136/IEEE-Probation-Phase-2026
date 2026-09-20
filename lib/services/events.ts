@@ -14,6 +14,18 @@ const statusRank = {
   CANCELLED: 3,
 };
 
+function paginate<T>(items: T[], requestedPage: number) {
+  const total = items.length;
+  const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const page = Math.min(requestedPage, pages);
+  return {
+    items: items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    total,
+    page,
+    pages,
+  };
+}
+
 function whereFor({ search, status }: EventQuery): Prisma.EventWhereInput {
   return {
     ...(search
@@ -37,22 +49,14 @@ export const eventService = {
   async list(query: EventQuery) {
     const where = whereFor(query);
     if (query.status === "all") {
-      const allEvents = await prisma.event.findMany({ where });
-      const events = allEvents.sort((a, b) => {
+      const events = (await prisma.event.findMany({ where })).sort((a, b) => {
         const rank = statusRank[a.status] - statusRank[b.status];
         if (rank) return rank;
         const date = a.date.getTime() - b.date.getTime();
         return date || a.id.localeCompare(b.id);
       });
-      const total = events.length;
-      const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-      const page = Math.min(query.page, pages);
-      return {
-        events: events.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
-        total,
-        page,
-        pages,
-      };
+      const { items, ...meta } = paginate(events, query.page);
+      return { events: items, ...meta };
     }
     const total = await prisma.event.count({ where });
     const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));

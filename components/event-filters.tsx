@@ -6,11 +6,13 @@ export function EventFilters({
   status,
   base,
   admin = false,
+  view,
 }: {
   search: string;
   status: string;
   base: string;
   admin?: boolean;
+  view?: string;
 }) {
   return (
     <form action={base} className="filters" role="search">
@@ -37,7 +39,10 @@ export function EventFilters({
         </button>
       </div>
       {admin ? (
-        <input type="hidden" name="status" value={status} />
+        <>
+          <input type="hidden" name="status" value={status} />
+          {view && <input type="hidden" name="view" value={view} />}
+        </>
       ) : (
         <>
           <label className="sr-only" htmlFor="event-status">

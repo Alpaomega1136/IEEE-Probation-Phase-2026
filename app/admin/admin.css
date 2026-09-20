@@ -214,6 +214,38 @@
 .admin-shell .filters > .button {
   min-height: 42px;
 }
+.admin-list-tools {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.admin-list-tools .filters {
+  flex: 1;
+  margin-bottom: 0;
+}
+.view-toggle {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid #dce5ed;
+  border-radius: 7px;
+  background: #f8fbfd;
+}
+.view-toggle a {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 34px;
+  border-radius: 5px;
+  color: #5f8fbd;
+}
+.view-toggle a:hover,
+.view-toggle a[aria-current="page"] {
+  background: white;
+  color: #145aa5;
+  box-shadow: 0 1px 3px #102d5412;
+}
 .admin-shell .pagination {
   margin-top: 20px;
   font-size: 11px;
@@ -549,25 +581,97 @@
   border-radius: 7px;
   font-size: 12px;
 }
-.login-page {
-  background: #edf8ff;
+.admin-event-list-grid > ul {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
 }
-.login-page .login-panel {
-  background: white;
+.admin-event-list-grid .managed-event {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
   border: 1px solid #dfe5eb;
   border-radius: 8px;
-  padding: 35px;
-  width: min(445px, calc(100% - 40px));
-  box-shadow: 0 12px 45px #104c8910;
-  margin-block: auto;
 }
-.login-page .login-icon {
-  background: #eaeff3;
-  border-color: #d4dce4;
-  border-radius: 8px;
+.admin-event-list-grid .managed-event:hover {
+  background: #fff;
+  border-color: #c5d6e5;
+  box-shadow: 0 8px 24px #102d540d;
+}
+.admin-event-list-grid .managed-event > .event-image {
+  width: 100%;
+  aspect-ratio: 1.75;
+  border-radius: 0;
+}
+.managed-event-card-body {
+  display: flex;
+  min-width: 0;
+  width: 100%;
+  flex: 1;
+  flex-direction: column;
+  padding: 17px;
+}
+.managed-event-card-meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.managed-event-card-meta time,
+.managed-event-card-body small {
+  color: #6693c0;
+  font-size: 11px;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+.managed-event-card-body .table-title {
+  font-size: 16px;
+  line-height: 1.45;
+}
+.managed-event-card-body p {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin-top: 11px;
+  color: #6693c0;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.managed-event-card-body p svg {
+  margin-top: 2px;
+}
+.managed-event-card-body small {
+  display: block;
+  margin-top: 6px;
+}
+.admin-event-list-grid .table-actions {
+  justify-content: flex-end;
+  gap: 4px;
+  margin-top: auto;
+  padding: 0 17px 17px;
+}
+.login-page {
+  background: #fff;
+}
+.login-page .login-side {
+  border-left: 1px solid #dfe5eb;
+}
+.login-page .login-panel {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  margin: auto 0;
+  padding: 0;
+  width: 100%;
 }
 .login-page .login-panel h1 {
-  font-size: 31px;
+  font-size: 36px;
   font-weight: 600;
 }
 .login-page .login-form {
@@ -584,11 +688,17 @@
   }
 }
 @media (max-width: 900px) {
+  .login-page .login-side {
+    border-left: 0;
+  }
   .admin-shell .admin-content {
     padding: 27px 24px;
   }
   .admin-shell .event-form {
     grid-template-columns: minmax(0, 1fr) 240px;
+  }
+  .admin-event-list-grid > ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 @media (max-width: 640px) {
@@ -659,9 +769,33 @@
   .admin-shell .filters {
     flex-wrap: wrap;
   }
+  .admin-list-tools {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .view-toggle {
+    align-self: flex-end;
+  }
   .admin-shell .search-input {
     max-width: none;
     flex: 1 1 180px;
+  }
+  .admin-event-list-grid > ul {
+    grid-template-columns: 1fr;
+  }
+  .admin-event-list-grid .managed-event {
+    display: flex;
+    padding: 0;
+  }
+  .admin-event-list-grid .managed-event > .event-image {
+    width: 100%;
+    height: auto;
+  }
+  .admin-event-list-grid .table-actions {
+    grid-column: auto;
+    padding-top: 0;
+    border-top: 0;
   }
   .admin-shell .search-input input {
     font-size: 16px;
@@ -687,14 +821,7 @@
     max-width: 420px;
   }
   .login-page .login-panel {
-    padding: 28px 23px;
-    margin-block: 25px;
-  }
-  .login-page .login-top {
-    padding-block: 22px;
-  }
-  .login-page .login-footer {
-    margin-top: auto;
+    margin-top: 34px;
   }
 }
 @media (max-width: 359px) {

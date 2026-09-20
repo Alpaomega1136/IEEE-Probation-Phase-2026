@@ -20,9 +20,7 @@ async function noOverflow(page: Page) {
     overflow: [...document.querySelectorAll("body *")]
       .filter((node) => {
         const rect = node.getBoundingClientRect();
-        return (
-          rect.right > window.innerWidth + 1 && !node.closest(".table-scroll")
-        );
+        return rect.right > window.innerWidth + 1;
       })
       .map((node) => ({
         tag: node.tagName,

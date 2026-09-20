@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Grid3X3, List } from "lucide-react";
 import { requireAdminPage } from "@/lib/auth/session";
 import { eventService } from "@/lib/services/events";
 import { eventQuerySchema } from "@/lib/validations/event";
@@ -17,6 +17,7 @@ export default async function AdminEvents({
   const params = await searchParams;
   const parsed = eventQuerySchema.safeParse(params);
   const query = parsed.success ? parsed.data : eventQuerySchema.parse({});
+  const view = params.view === "grid" ? "grid" : "list";
   const { events, ...meta } = await eventService.list(query);
   const notice = new Map([
     ["created", "Event created successfully."],
@@ -47,7 +48,7 @@ export default async function AdminEvents({
         {tabs.map(({ value, label }) => (
           <Link
             key={value}
-            href={`/admin/events?${new URLSearchParams({ status: value, search: query.search })}`}
+            href={`/admin/events?${new URLSearchParams({ status: value, search: query.search, view })}`}
             aria-current={
               query.status === value ||
               (value === "past" && query.status === "COMPLETED") ||
@@ -60,9 +61,29 @@ export default async function AdminEvents({
           </Link>
         ))}
       </nav>
-      <EventFilters {...query} base="/admin/events" admin />
+      <div className="admin-list-tools">
+        <EventFilters {...query} base="/admin/events" admin view={view} />
+        <div className="view-toggle" aria-label="Event layout">
+          <Link
+            href={`/admin/events?${new URLSearchParams({ search: query.search, status: query.status, view: "list" })}`}
+            aria-current={view === "list" ? "page" : undefined}
+            aria-label="Show events as rows"
+            title="Rows"
+          >
+            <List size={17} />
+          </Link>
+          <Link
+            href={`/admin/events?${new URLSearchParams({ search: query.search, status: query.status, view: "grid" })}`}
+            aria-current={view === "grid" ? "page" : undefined}
+            aria-label="Show events as cards"
+            title="Cards"
+          >
+            <Grid3X3 size={17} />
+          </Link>
+        </div>
+      </div>
       {events.length ? (
-        <AdminEventList events={events} />
+        <AdminEventList events={events} view={view} />
       ) : (
         <EmptyState filtered={!!query.search || query.status !== "all"} />
       )}
@@ -71,6 +92,7 @@ export default async function AdminEvents({
         {...query}
         page={meta.page}
         base="/admin/events"
+        view={view}
         showTotal={false}
       />
     </>

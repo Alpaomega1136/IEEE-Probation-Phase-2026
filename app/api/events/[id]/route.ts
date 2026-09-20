@@ -46,7 +46,8 @@ async function cleanupUnusedImages(
 
 export async function GET(_request: Request, { params }: Context) {
   try {
-    const event = await eventService.getById((await params).id);
+    const { id } = await params;
+    const event = await eventService.getById(id);
     if (!event)
       throw new AppError(
         "EVENT_NOT_FOUND",
@@ -62,11 +63,9 @@ export async function GET(_request: Request, { params }: Context) {
 export async function PATCH(request: Request, { params }: Context) {
   try {
     await requireAdminMutation(request);
-    const previous = await eventService.getById((await params).id);
-    const event = await eventService.update(
-      (await params).id,
-      await readJson(request),
-    );
+    const { id } = await params;
+    const previous = await eventService.getById(id);
+    const event = await eventService.update(id, await readJson(request));
     if (previous) await cleanupUnusedImages(previous, event);
     revalidatePath("/", "layout");
     return Response.json({ data: event });
@@ -78,7 +77,8 @@ export async function PATCH(request: Request, { params }: Context) {
 export async function DELETE(request: Request, { params }: Context) {
   try {
     await requireAdminMutation(request);
-    const event = await eventService.delete((await params).id);
+    const { id } = await params;
+    const event = await eventService.delete(id);
     await cleanupUnusedImages(event);
     revalidatePath("/", "layout");
     return Response.json({ data: { deleted: true } });

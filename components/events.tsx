@@ -108,6 +108,7 @@ export function Pagination({
   base,
   search,
   status,
+  view,
   showTotal = true,
 }: {
   page: number;
@@ -116,11 +117,15 @@ export function Pagination({
   base: string;
   search: string;
   status: string;
+  view?: string;
   showTotal?: boolean;
 }) {
   if (!showTotal && pages <= 1) return null;
-  const href = (value: number) =>
-    `${base}?${new URLSearchParams({ search, status, page: String(value) })}`;
+  const href = (value: number) => {
+    const params = new URLSearchParams({ search, status, page: String(value) });
+    if (view) params.set("view", view);
+    return `${base}?${params}`;
+  };
   return (
     <div className="pagination">
       {showTotal && (
