@@ -9,7 +9,7 @@ A fullstack event catalogue and administration workspace for the IEEE ITB probat
 - Admin sign-in and a single event management page with create/edit/delete workflows.
 - A top navigation with one Create event action and a profile sign-out menu, plus thumbnail event lists, status tabs, mobile event rows, and a live preview in the shared create/edit form.
 - A keyboard-accessible delete confirmation dialog, field validation, progress indicators, success messages, and loading/empty/error/not-found states.
-- A visual description editor (headings, emphasis, lists, quotes, undo/redo) and a cover-image dialog for photo upload or HTTPS URL.
+- A visual description editor (headings, emphasis, lists, quotes, links, images, undo/redo) and image dialogs for photo upload or HTTPS URL.
 - PostgreSQL persistence, an initial migration, and an idempotent development seed.
 - Responsive public and admin navigation.
 
@@ -84,7 +84,7 @@ The list endpoint accepts `search`, `status`, and `page`. Status values are `all
 
 Create requires `title`, `description`, `date` (ISO datetime including timezone), `location`, and `status`; `imageUrl` is optional. PATCH accepts at least one of these fields. Empty image URLs clear the cover. Unknown fields are rejected. Mutations require the session cookie and a same-origin `Origin` header. Event POST/PATCH use JSON; image upload POST uses multipart form data with an `image` file. Errors use `{ error: { code, message, fields? } }`, with 400, 401, 403, 404, or 500 status codes.
 
-Upload accepts JPEG, PNG, or WebP up to 5 MB. Files are stored in ignored `.local/uploads` and referenced from the event record. Replacing or deleting an event cover removes the previous local file. Back up this directory along with PostgreSQL; a production deployment needs a persistent writable volume at that path (or an object-storage replacement), including when running multiple instances.
+Upload accepts JPEG, PNG, or WebP up to 5 MB. Files are stored in ignored `.local/uploads` and referenced from the event record. Replacing or deleting an event cover or description image removes an unreferenced local file. Images uploaded into a description before the event is saved remain on disk if the draft is abandoned; periodically clear such unused files. Back up this directory along with PostgreSQL; a production deployment needs a persistent writable volume at that path (or an object-storage replacement), including when running multiple instances.
 
 Event dates are stored as UTC and displayed/edited in Asia/Jakarta (WIB). Status is explicitly set by the admin; it is not automatically changed when an event date passes. Mutations revalidate the application layout and refresh the admin interface, so public results reflect persisted changes.
 

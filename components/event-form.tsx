@@ -268,9 +268,7 @@ export function EventForm({ event }: { event?: InitialEvent }) {
               {fieldError("description")}
             </div>
             <div className="field">
-              <span className="field-label">
-                Cover image <span className="optional">Optional</span>
-              </span>
+              <span className="field-label">Cover image</span>
               <div className="cover-picker-row">
                 <button
                   id="cover-picker"

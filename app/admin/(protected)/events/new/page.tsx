@@ -15,7 +15,6 @@ export default async function NewEvent() {
       <div className="admin-heading">
         <div>
           <h1>Create event</h1>
-          <p>Create something for the community to look forward to.</p>
         </div>
       </div>
       <EventForm />

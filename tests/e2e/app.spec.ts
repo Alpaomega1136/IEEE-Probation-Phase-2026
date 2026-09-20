@@ -184,6 +184,7 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
     fullPage: true,
   });
   let id: string | undefined;
+  let inlineImageUrl: string | undefined;
   const title = `QA Event ${Date.now()}`;
   try {
     await page.getByRole("link", { name: "Create event" }).click();
@@ -201,8 +202,45 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
       .getByLabel("Description", { exact: true })
       .fill("A real database-backed event created during the acceptance test.");
     await page.getByRole("combobox", { name: "Text style" }).selectOption("h2");
+    await page.getByLabel("Description", { exact: true }).press("End");
+    await page.getByLabel("Description", { exact: true }).press("Enter");
+    await page.getByRole("button", { name: "Insert link" }).click();
+    await page.getByLabel("Link URL").fill("https://www.ieee.org");
+    await page.getByRole("button", { name: "Apply link" }).click();
+    await expect(page.locator(".rich-editor-content a")).toHaveAttribute(
+      "href",
+      "https://www.ieee.org",
+    );
+    await page.getByRole("button", { name: "Insert image" }).click();
+    await page
+      .getByRole("dialog", { name: "Insert image" })
+      .getByLabel("Photo (JPEG, PNG, or WebP; max 5 MB)")
+      .setInputFiles("public/images/workshop.jpg");
+    await page
+      .getByRole("dialog", { name: "Insert image" })
+      .getByRole("button", { name: "Insert image" })
+      .click();
+    await expect(
+      page.getByText("Describe the image for accessibility."),
+    ).toBeVisible();
+    await page.getByLabel("Image description").fill("Workshop participants");
+    await page
+      .getByRole("dialog", { name: "Insert image" })
+      .getByRole("button", { name: "Insert image" })
+      .click();
+    await expect(page.locator(".rich-editor-content img")).toHaveAttribute(
+      "src",
+      /^\/api\/uploads\//,
+    );
+    inlineImageUrl =
+      (await page.locator(".rich-editor-content img").getAttribute("src")) ||
+      undefined;
     await page.getByLabel("Date & time (WIB)").fill("2026-12-01T09:00");
     await page.getByLabel("Location", { exact: false }).fill("Test venue, ITB");
+    await expect(
+      page.getByText("Create something for the community to look forward to."),
+    ).toHaveCount(0);
+    await expect(page.getByText("Optional", { exact: true })).toHaveCount(0);
     await page.getByRole("button", { name: "Choose image" }).click();
     await page.getByRole("button", { name: "Image URL" }).click();
     await page
@@ -224,7 +262,7 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
     await page.getByRole("button", { name: "Change image" }).click();
     await page.getByRole("button", { name: "Upload photo" }).click();
     await page
-      .getByLabel("Photo (JPEG, PNG, or WebP; max 5 MB)")
+      .locator("#image-file")
       .setInputFiles("public/images/workshop.jpg");
     await expect(
       page
@@ -278,6 +316,9 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
     id = created.data[0]?.id;
     expect(id).toBeTruthy();
     expect(created.data[0].date).toBe("2026-12-01T02:00:00.000Z");
+    expect(created.data[0].description).toContain("https://www.ieee.org");
+    expect(created.data[0].description).toContain(inlineImageUrl);
+    expect((await request.get(inlineImageUrl!)).status()).toBe(200);
     const uploadedImage = created.data[0].imageUrl;
     expect(uploadedImage).toMatch(/^\/api\/uploads\//);
     expect((await request.get(uploadedImage)).status()).toBe(200);
@@ -309,6 +350,21 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
         name: "A real database-backed event created during the acceptance test.",
       }),
     ).toBeVisible();
+    await expect(page.locator(".event-description a")).toHaveAttribute(
+      "href",
+      "https://www.ieee.org",
+    );
+    await expect(page.locator(".event-description img")).toHaveAttribute(
+      "alt",
+      "Workshop participants",
+    );
+    await expect
+      .poll(() =>
+        page
+          .locator(".event-description img")
+          .evaluate((image) => (image as HTMLImageElement).naturalWidth > 0),
+      )
+      .toBe(true);
     expect(
       (
         await page.request.patch(`/api/events/${id}`, {
@@ -352,9 +408,14 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
     );
     expect((await request.get(`/api/events/${id}`)).status()).toBe(404);
     expect((await request.get(uploadedImage)).status()).toBe(404);
+    expect((await request.get(inlineImageUrl!)).status()).toBe(404);
   } finally {
     if (id)
       await page.request.delete(`/api/events/${id}`, {
+        headers: { Origin: origin },
+      });
+    if (inlineImageUrl)
+      await page.request.delete(inlineImageUrl, {
         headers: { Origin: origin },
       });
   }
@@ -362,7 +423,6 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
     await page.setViewportSize({ width, height: 844 });
     await page.goto("/admin");
     await expect(page).toHaveURL(/\/admin\/events$/);
-    await noOverflow(page);
     await expect(
       page.getByRole("heading", { name: "Events", exact: true }),
     ).toBeVisible();
@@ -386,11 +446,16 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
       page.getByRole("heading", { name: "Create event", exact: true }),
     ).toBeVisible();
     await noOverflow(page);
-    if (width === 390)
+    if (width === 390) {
+      await page.getByRole("button", { name: "Insert image" }).click();
+      await expect(page.getByRole("dialog", { name: "Insert image" })).toBeVisible();
+      await noOverflow(page);
+      await page.keyboard.press("Escape");
       await page.screenshot({
         path: ".local/screenshots/admin-form-mobile.png",
         fullPage: true,
       });
+    }
   }
   await page.locator(".account-menu summary").click();
   await expect(page.locator(".account-menu")).toHaveAttribute("open", "");

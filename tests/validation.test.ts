@@ -8,6 +8,7 @@ import {
 import { credentialsSchema } from "../lib/validations/auth";
 import { fromDateTimeInput, toDateTimeInput, formatTime } from "../lib/events";
 import { hashPassword, verifyPassword } from "../lib/auth/password";
+import { uploadedDescriptionImages } from "../lib/description";
 
 const valid = {
   title: " Test event ",
@@ -73,6 +74,18 @@ test("event validation rejects invalid data and preserves optional image workflo
     rich.description,
     "<h2>Agenda</h2><p><strong>Hello</strong> world</p>",
   );
+  const upload = "/api/uploads/123e4567-e89b-12d3-a456-426614174000.jpg";
+  const formatted = eventInputSchema.parse({
+    ...valid,
+    description: `<p>See <a href="https://ieee.org" onclick="bad()">IEEE</a> and <a href="javascript:bad()">unsafe link</a></p><img src="${upload}" alt="Team photo" onerror="bad()"><img src="http://bad.example/x.jpg" alt="Unsafe"><img src="javascript:bad()" alt="Unsafe">`,
+  }).description;
+  assert.match(formatted, /<a href="https:\/\/ieee.org">IEEE<\/a>/);
+  assert.match(
+    formatted,
+    /<img src="\/api\/uploads\/.*" alt="Team photo" ?\/>/,
+  );
+  assert.doesNotMatch(formatted, /onclick|onerror|http:\/\/bad|javascript:/);
+  assert.deepEqual([...uploadedDescriptionImages(formatted)], [upload]);
 });
 test("WIB date round-trip is independent of host timezone", () => {
   const input = "2026-10-24T09:00";

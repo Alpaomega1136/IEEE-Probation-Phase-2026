@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { cleanDescription, hasDescriptionText } from "@/lib/description";
+import {
+  cleanDescription,
+  hasDescriptionText,
+  isAllowedImageUrl,
+} from "@/lib/description";
 
 export const eventStatusSchema = z.enum([
   "UPCOMING",
@@ -14,15 +18,7 @@ const imageUrlSchema = z
   .max(2048)
   .refine((value) => {
     if (!value) return true;
-    if (/^\/images\/(conference|workshop|collaboration)\.jpg$/.test(value))
-      return true;
-    if (/^\/api\/uploads\/[a-f0-9-]{36}\.(jpg|png|webp)$/.test(value))
-      return true;
-    try {
-      return new URL(value).protocol === "https:";
-    } catch {
-      return false;
-    }
+    return isAllowedImageUrl(value);
   }, "Use a valid HTTPS image URL")
   .optional();
 
