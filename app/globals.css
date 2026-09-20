@@ -955,6 +955,10 @@ p {
 .password-input input {
   padding-right: 45px;
 }
+.password-input input::-ms-reveal,
+.password-input input::-ms-clear {
+  display: none;
+}
 .password-input button {
   position: absolute;
   top: 5px;
