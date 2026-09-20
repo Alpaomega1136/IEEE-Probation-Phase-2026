@@ -421,8 +421,59 @@
   background: white;
   box-shadow: 0 1px 3px #102d541a;
 }
-.image-dialog .field input[type="file"] {
-  height: auto;
+.image-file-picker {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  min-width: 0;
+}
+.admin-shell .field .image-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  opacity: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.admin-shell .field .image-file-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 42px;
+  padding: 9px 14px;
+  border: 1px solid #b8cee1;
+  border-radius: 6px;
+  background: #f3faff;
+  color: #145aa5;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.image-file-trigger:hover {
+  background: #e5f4fd;
+  border-color: #7eb6df;
+}
+.image-file-input:focus-visible + .image-file-trigger {
+  outline: 2px solid #145aa5;
+  outline-offset: 2px;
+}
+.image-file-input:disabled + .image-file-trigger {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.image-file-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: #3a648e;
+  font-size: 12px;
+}
+.image-file-picker small {
+  flex-basis: 100%;
+  color: #6894c1;
+  font-size: 11px;
 }
 .image-dialog .field > .button {
   align-self: flex-end;

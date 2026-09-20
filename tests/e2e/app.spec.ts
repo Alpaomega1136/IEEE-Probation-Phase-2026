@@ -212,10 +212,32 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
       "https://www.ieee.org",
     );
     await page.getByRole("button", { name: "Insert image" }).click();
-    await page
-      .getByRole("dialog", { name: "Insert image" })
-      .getByLabel("Photo (JPEG, PNG, or WebP; max 5 MB)")
-      .setInputFiles("public/images/workshop.jpg");
+    await expect(
+      page
+        .getByRole("dialog", { name: "Insert image" })
+        .getByText("Choose photo"),
+    ).toBeVisible();
+    await expect(
+      page
+        .getByRole("dialog", { name: "Insert image" })
+        .getByText("No photo selected"),
+    ).toBeVisible();
+    await page.screenshot({
+      path: ".local/screenshots/description-file-picker-desktop.png",
+    });
+    const [descriptionChooser] = await Promise.all([
+      page.waitForEvent("filechooser"),
+      page
+        .getByRole("dialog", { name: "Insert image" })
+        .getByText("Choose photo")
+        .click(),
+    ]);
+    await descriptionChooser.setFiles("public/images/workshop.jpg");
+    await expect(
+      page
+        .getByRole("dialog", { name: "Insert image" })
+        .getByText("workshop.jpg"),
+    ).toBeVisible();
     await page
       .getByRole("dialog", { name: "Insert image" })
       .getByRole("button", { name: "Insert image" })
@@ -261,9 +283,22 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
     ).toHaveAttribute("src", "https://example.com/image.jpg");
     await page.getByRole("button", { name: "Change image" }).click();
     await page.getByRole("button", { name: "Upload photo" }).click();
-    await page
-      .locator("#image-file")
-      .setInputFiles("public/images/workshop.jpg");
+    await expect(
+      page
+        .getByRole("dialog", { name: "Choose cover image" })
+        .getByText("Choose photo"),
+    ).toBeVisible();
+    await page.screenshot({
+      path: ".local/screenshots/cover-file-picker-desktop.png",
+    });
+    const [coverChooser] = await Promise.all([
+      page.waitForEvent("filechooser"),
+      page
+        .getByRole("dialog", { name: "Choose cover image" })
+        .getByText("Choose photo")
+        .click(),
+    ]);
+    await coverChooser.setFiles("public/images/workshop.jpg");
     await expect(
       page
         .getByRole("complementary", { name: "Event preview" })
@@ -448,8 +483,13 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
     await noOverflow(page);
     if (width === 390) {
       await page.getByRole("button", { name: "Insert image" }).click();
-      await expect(page.getByRole("dialog", { name: "Insert image" })).toBeVisible();
+      await expect(
+        page.getByRole("dialog", { name: "Insert image" }),
+      ).toBeVisible();
       await noOverflow(page);
+      await page.screenshot({
+        path: ".local/screenshots/description-file-picker-mobile.png",
+      });
       await page.keyboard.press("Escape");
       await page.screenshot({
         path: ".local/screenshots/admin-form-mobile.png",

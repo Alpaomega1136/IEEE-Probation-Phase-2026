@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { EventImage } from "@/components/event-image";
+import { ImageFilePicker } from "@/components/image-file-picker";
 import { RichTextEditor } from "@/components/rich-text-editor";
 import { StatusBadge } from "@/components/events";
 import { eventInputSchema } from "@/lib/validations/event";
@@ -418,15 +419,10 @@ export function EventForm({ event }: { event?: InitialEvent }) {
         </div>
         {imageMode === "upload" ? (
           <div className="field" key="upload">
-            <label htmlFor="image-file">
-              Photo (JPEG, PNG, or WebP; max 5 MB)
-            </label>
-            <input
+            <ImageFilePicker
               id="image-file"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
+              fileName={imageFile?.name}
+              onChange={(file) => {
                 if (!file) return;
                 if (
                   file.size > 5 * 1024 * 1024 ||

@@ -18,6 +18,7 @@ import {
   LoaderCircle,
 } from "lucide-react";
 import { isAllowedImageUrl } from "@/lib/description";
+import { ImageFilePicker } from "@/components/image-file-picker";
 
 export function RichTextEditor({
   value,
@@ -326,16 +327,11 @@ export function RichTextEditor({
             </div>
             {imageMode === "upload" ? (
               <div className="field" key="upload">
-                <label htmlFor="description-image-file">
-                  Photo (JPEG, PNG, or WebP; max 5 MB)
-                </label>
-                <input
+                <ImageFilePicker
                   id="description-image-file"
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
                   disabled={pending}
-                  onChange={(event) => {
-                    const selected = event.target.files?.[0] || null;
+                  fileName={file?.name}
+                  onChange={(selected) => {
                     if (
                       selected &&
                       (selected.size > 5 * 1024 * 1024 ||
