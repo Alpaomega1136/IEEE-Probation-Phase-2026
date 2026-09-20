@@ -1,5 +1,6 @@
 # IEEE ITB Event Management
 
+![alt text](image-1.png)
 Mini fullstack event management application for the IEEE ITB Student Branch Fullstack Developer Probation Phase. Public users can browse events and read event details; authenticated admins can manage event data through a protected dashboard.
 
 ## Completed Features
