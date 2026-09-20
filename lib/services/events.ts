@@ -62,24 +62,6 @@ export const eventService = {
     ]);
     return { upcoming, past };
   },
-  async summary() {
-    const [total, upcoming, completed, recent, cancelled, next] =
-      await Promise.all([
-        prisma.event.count(),
-        prisma.event.count({
-          where: { status: { in: ["UPCOMING", "ONGOING"] } },
-        }),
-        prisma.event.count({ where: { status: "COMPLETED" } }),
-        prisma.event.findMany({ orderBy: { updatedAt: "desc" }, take: 5 }),
-        prisma.event.count({ where: { status: "CANCELLED" } }),
-        prisma.event.findMany({
-          where: { status: { in: ["UPCOMING", "ONGOING"] } },
-          orderBy: { date: "asc" },
-          take: 3,
-        }),
-      ]);
-    return { total, upcoming, completed, recent, cancelled, next };
-  },
   create(input: unknown) {
     const data = eventInputSchema.parse(input);
     return prisma.event.create({

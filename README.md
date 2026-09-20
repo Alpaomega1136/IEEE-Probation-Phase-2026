@@ -6,11 +6,11 @@ A fullstack event catalogue and administration workspace for the IEEE ITB probat
 
 - Public home, event catalogue, event detail, and About pages.
 - Search, persisted-status filters, and server-side pagination (9 events per page).
-- Admin sign-in, an overview dashboard, and event create/edit/delete workflows.
-- A modern admin workspace with status summaries, an upcoming agenda, thumbnail event lists, status tabs, mobile event rows, and a live preview in the shared create/edit form.
+- Admin sign-in and a single event management page with create/edit/delete workflows.
+- A top navigation with one Create event action and a profile sign-out menu, plus thumbnail event lists, status tabs, mobile event rows, and a live preview in the shared create/edit form.
 - A keyboard-accessible delete confirmation dialog, field validation, progress indicators, success messages, and loading/empty/error/not-found states.
 - PostgreSQL persistence, an initial migration, and an idempotent development seed.
-- Responsive public navigation and a separate mobile admin drawer.
+- Responsive public and admin navigation.
 
 ## Stack and Architecture
 
@@ -117,7 +117,7 @@ Sessions expire after 8 hours and sign-out removes the browser session cookie. D
 ## Project Structure
 
 - `app/(public)`: public catalogue and layouts.
-- `app/admin/(protected)`: protected dashboard and forms.
+- `app/admin/(protected)`: protected event management page and forms; `/admin` redirects to `/admin/events`.
 - `app/api`: authentication and event endpoints.
 - `components`: shared UI and interactive controls.
 - `lib`: authentication, validation, event services, dates, and safe API errors.

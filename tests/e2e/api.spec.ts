@@ -12,7 +12,7 @@ test("API pagination, partial update, and validation retain stored data", async 
     .getByLabel("Password", { exact: true })
     .fill(process.env.SEED_ADMIN_PASSWORD!);
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
-  await expect(page).toHaveURL(/\/admin$/);
+  await expect(page).toHaveURL(/\/admin\/events$/);
   await page.goto("/admin/events?notice=__proto__");
   await expect(
     page.getByRole("heading", { name: "Events", exact: true }),

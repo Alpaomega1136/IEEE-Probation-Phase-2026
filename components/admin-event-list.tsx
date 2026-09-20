@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Event } from "@prisma/client";
-import { ArrowUpRight, Pencil, CalendarDays } from "lucide-react";
+import { Pencil, CalendarDays } from "lucide-react";
 import { EventImage } from "@/components/event-image";
 import { StatusBadge } from "@/components/events";
 import { DeleteEvent } from "@/components/delete-event";
@@ -43,14 +43,6 @@ export function AdminEventList({ events }: { events: Event[] }) {
               <StatusBadge status={event.status} />
             </div>
             <div className="table-actions">
-              <Link
-                href={`/events/${event.id}`}
-                className="icon-button"
-                title={`View ${event.title}`}
-                aria-label={`View ${event.title}`}
-              >
-                <ArrowUpRight size={17} />
-              </Link>
               <Link
                 href={`/admin/events/${event.id}/edit`}
                 className="icon-button edit-icon"

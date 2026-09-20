@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { EventForm } from "@/components/event-form";
 import { requireAdminPage } from "@/lib/auth/session";
 
-export const metadata = { title: "Add event" };
+export const metadata = { title: "Create event" };
 export default async function NewEvent() {
   await requireAdminPage();
   return (
@@ -14,7 +14,7 @@ export default async function NewEvent() {
       </Link>
       <div className="admin-heading">
         <div>
-          <h1>Add event</h1>
+          <h1>Create event</h1>
           <p>Create something for the community to look forward to.</p>
         </div>
       </div>

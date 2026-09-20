@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Plus, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { requireAdminPage } from "@/lib/auth/session";
 import { eventService } from "@/lib/services/events";
 import { eventQuerySchema } from "@/lib/validations/event";
@@ -34,19 +34,8 @@ export default async function AdminEvents({
     <>
       <div className="admin-heading">
         <div>
-          <p className="eyebrow">Event management</p>
-          <h1>
-            Events{" "}
-            <span className="heading-count" aria-hidden="true">
-              {meta.total}
-            </span>
-          </h1>
-          <p>Great experiences start with the details.</p>
+          <h1>Events</h1>
         </div>
-        <Link className="button button-primary" href="/admin/events/new">
-          <Plus size={18} />
-          Add event
-        </Link>
       </div>
       {notice && (
         <div className="notice success" role="status">
@@ -77,7 +66,13 @@ export default async function AdminEvents({
       ) : (
         <EmptyState filtered={!!query.search || query.status !== "all"} />
       )}
-      <Pagination {...meta} {...query} page={meta.page} base="/admin/events" />
+      <Pagination
+        {...meta}
+        {...query}
+        page={meta.page}
+        base="/admin/events"
+        showTotal={false}
+      />
     </>
   );
 }

@@ -105,6 +105,7 @@ export function Pagination({
   base,
   search,
   status,
+  showTotal = true,
 }: {
   page: number;
   pages: number;
@@ -112,14 +113,18 @@ export function Pagination({
   base: string;
   search: string;
   status: string;
+  showTotal?: boolean;
 }) {
+  if (!showTotal && pages <= 1) return null;
   const href = (value: number) =>
     `${base}?${new URLSearchParams({ search, status, page: String(value) })}`;
   return (
     <div className="pagination">
-      <span>
-        {total} {total === 1 ? "event" : "events"}
-      </span>
+      {showTotal && (
+        <span>
+          {total} {total === 1 ? "event" : "events"}
+        </span>
+      )}
       {pages > 1 && (
         <nav aria-label="Pagination">
           {page > 1 ? (

@@ -8,9 +8,9 @@ async function login(page: Page) {
   await page.getByLabel("Email address").fill(email);
   await page.getByLabel("Password", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
-  await expect(page).toHaveURL(/\/admin$/);
+  await expect(page).toHaveURL(/\/admin\/events$/);
   await expect(
-    page.getByRole("heading", { name: "Overview", exact: true }),
+    page.getByRole("heading", { name: "Events", exact: true }),
   ).toBeVisible();
 }
 async function noOverflow(page: Page) {
@@ -151,6 +151,16 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
     "Unable to sign in",
   );
   await login(page);
+  await expect(page.getByText("Overview", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("View public site", { exact: true })).toHaveCount(
+    0,
+  );
+  await expect(page.getByRole("link", { name: "Add event" })).toHaveCount(0);
+  await expect(
+    page.getByRole("navigation", { name: "Admin actions" }).getByRole("link", {
+      name: "Create event",
+    }),
+  ).toHaveCount(1);
   await expect
     .poll(() =>
       page.locator(".managed-event img").evaluateAll(
@@ -163,9 +173,11 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
       ),
     )
     .toBe(true);
-  await page.locator(".managed-event img").evaluateAll((images) =>
-    Promise.all(images.map((image) => (image as HTMLImageElement).decode())),
-  );
+  await page
+    .locator(".managed-event img")
+    .evaluateAll((images) =>
+      Promise.all(images.map((image) => (image as HTMLImageElement).decode())),
+    );
   await page.screenshot({
     path: ".local/screenshots/admin-desktop.png",
     fullPage: true,
@@ -173,7 +185,7 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
   let id: string | undefined;
   const title = `QA Event ${Date.now()}`;
   try {
-    await page.getByRole("link", { name: "Add event", exact: true }).click();
+    await page.getByRole("link", { name: "Create event" }).click();
     await page
       .getByRole("button", { name: "Create event", exact: true })
       .click();
@@ -319,20 +331,12 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
   for (const width of [768, 390, 320]) {
     await page.setViewportSize({ width, height: 844 });
     await page.goto("/admin");
+    await expect(page).toHaveURL(/\/admin\/events$/);
     await noOverflow(page);
-    if (width === 390)
-      await page.screenshot({
-        path: ".local/screenshots/admin-overview-mobile.png",
-        fullPage: true,
-      });
-    await page.getByRole("button", { name: "Open admin menu" }).click();
-    await page
-      .getByRole("navigation", { name: "Admin navigation" })
-      .getByRole("link", { name: "Events", exact: true })
-      .click();
     await expect(
       page.getByRole("heading", { name: "Events", exact: true }),
     ).toBeVisible();
+    await page.waitForLoadState("networkidle");
     await noOverflow(page);
     if (width === 390) {
       await page.screenshot({
@@ -347,9 +351,9 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
       await page.keyboard.press("Escape");
       await expect(page.getByRole("dialog")).not.toBeVisible();
     }
-    await page.getByRole("link", { name: "Add event", exact: true }).click();
+    await page.getByRole("link", { name: "Create event" }).click();
     await expect(
-      page.getByRole("heading", { name: "Add event", exact: true }),
+      page.getByRole("heading", { name: "Create event", exact: true }),
     ).toBeVisible();
     await noOverflow(page);
     if (width === 390)
@@ -358,12 +362,15 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
         fullPage: true,
       });
   }
-  await page.getByRole("button", { name: "Open admin menu" }).click();
-  await page.getByRole("link", { name: "Create event", exact: true }).click();
-  await expect(
-    page.getByRole("button", { name: "Open admin menu" }),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Open admin menu" }).click();
+  await page.locator(".account-menu summary").click();
+  await expect(page.locator(".account-menu")).toHaveAttribute("open", "");
+  await page.keyboard.press("Escape");
+  await expect(page.locator(".account-menu")).not.toHaveAttribute("open", "");
+  await page.locator(".account-menu summary").click();
+  await expect(page.locator(".account-popover")).toContainText(email);
+  await page.screenshot({
+    path: ".local/screenshots/admin-profile-mobile.png",
+  });
   await page.getByRole("button", { name: "Sign out", exact: true }).click();
   await expect(page).toHaveURL(/\/admin\/login/);
   await page.goto("/admin");

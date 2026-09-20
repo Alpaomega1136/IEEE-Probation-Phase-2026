@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { EventForm } from "@/components/event-form";
 import { requireAdminPage } from "@/lib/auth/session";
 import { eventService } from "@/lib/services/events";
@@ -26,9 +26,6 @@ export default async function EditEvent({
           <h1>Edit event</h1>
           <p>{event.title}</p>
         </div>
-        <Link href={`/events/${event.id}`} className="button button-secondary">
-          View event <ArrowUpRight size={17} />
-        </Link>
       </div>
       <EventForm event={{ ...event, date: toDateTimeInput(event.date) }} />
     </>

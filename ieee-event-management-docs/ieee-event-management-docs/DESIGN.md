@@ -2,7 +2,7 @@
 
 ## Implemented Design Note
 
-The admin refresh uses a light, work-focused workspace with blue accents, four database-backed status summaries, a coming-up agenda, and a shared thumbnail event list. On small screens, each event becomes a compact row group with accessible view/edit/delete actions. Status links preserve search terms. The shared create/edit form shows a live event preview, with no new persistence fields or client-side authorization assumptions.
+The admin refresh uses a light, work-focused workspace with blue accents and a single event management page. The top navigation contains Create event and an avatar menu for Sign out; there is no sidebar or overview summary. On small screens, each event becomes a compact row group with accessible edit/delete actions. Status links preserve search terms. The shared create/edit form shows a live event preview, with no new persistence fields or client-side authorization assumptions.
 
 The September 2026 visual revision adopts a campus technology publication direction: oversized poster typography over workbench photography, a light-blue next-event band driven by database data, asymmetric upcoming-event composition, date-stamped catalogue entries, and an editorial archive list. The supplied IEEE ITB Student Branch logo replaces the generic navigation mark. Navy, IEEE blue, pale blue, and white follow the supplied visual reference across public and admin pages, with serif italics reserved for section headings and monospace metadata. Existing navigation, data contracts, status labels, and CRUD workflows remain in place. Mobile layouts reflow without hiding essential event information; motion respects reduced-motion preferences.
 
@@ -183,66 +183,21 @@ Mobile: one column.
 
 ## 6. Admin Layout
 
-Do not reuse the public marketing navigation.
-
-```text
-┌───────────────┬──────────────────────────────────────────────┐
-│ IEEE Admin    │ Header                                       │
-│               ├──────────────────────────────────────────────┤
-│ Dashboard     │ Main Content                                 │
-│ Events        │                                              │
-│               │                                              │
-│ Logout        │                                              │
-└───────────────┴──────────────────────────────────────────────┘
-```
-
-Mobile:
-
-- Sidebar becomes drawer/sheet.
-- Main content uses full width.
-- Critical actions remain reachable.
+The admin area uses one top navigation with the IEEE brand, a Create event action, and an account avatar that opens Sign out. The navigation stays usable on mobile, where Create event becomes an icon button.
 
 ---
 
-## 7. Admin Dashboard
+## 7. Admin Event List
 
-Keep analytics simple.
-
-Suggested cards:
-
-- Total Events
-- Upcoming Events
-- Past/Completed Events
-
-Below cards:
-
-- Recent Events
-- Link to Event Management
-
-Do not implement advanced charts for the core version.
+`/admin` redirects to `/admin/events`. The event list is the main admin screen. It shows event details with status tabs, search, edit, delete confirmation, and pagination when needed. It does not show overview counters or a second create action.
 
 ---
 
 ## 8. Event Management
 
-Desktop table:
-
-| Event | Date | Location | Status | Actions |
-|---|---|---|---|---|
-
-Actions:
-
-- Edit
-- Delete
-
-Header action:
-
-`+ Add Event`
-
-Mobile can use horizontally scrollable table or event management cards.
+Desktop rows show the event, schedule, status, and edit/delete actions. Mobile rows stack the same information without hiding either action. The shared create/edit form retains its live preview and validation.
 
 ---
-
 ## 9. Forms
 
 Create and Edit should reuse one form component.
