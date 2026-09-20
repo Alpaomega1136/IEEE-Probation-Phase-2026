@@ -335,47 +335,31 @@ export function EventForm({ event }: { event?: InitialEvent }) {
             </p>
           </div>
         </div>
-        <dl className="preview-summary">
-          <div>
-            <dt>Organizer</dt>
-            <dd>IEEE ITB Student Branch</dd>
-          </div>
-          <div>
-            <dt>Time zone</dt>
-            <dd>Asia/Jakarta (WIB)</dd>
-          </div>
-          {event && (
-            <div>
-              <dt>Visibility</dt>
-              <dd>Public event</dd>
-            </div>
-          )}
-        </dl>
+        <div className="form-actions">
+          <Link
+            href="/admin/events"
+            className="button button-secondary"
+            aria-disabled={pending}
+            onClick={(e) => {
+              if (pending) e.preventDefault();
+            }}
+          >
+            Cancel
+          </Link>
+          <button
+            className="button button-primary"
+            type="submit"
+            disabled={pending}
+          >
+            {pending ? (
+              <LoaderCircle size={17} className="spin" />
+            ) : (
+              <Save size={17} />
+            )}
+            {pending ? "Saving..." : event ? "Save changes" : "Create event"}
+          </button>
+        </div>
       </aside>
-      <div className="form-actions">
-        <Link
-          href="/admin/events"
-          className="button button-secondary"
-          aria-disabled={pending}
-          onClick={(e) => {
-            if (pending) e.preventDefault();
-          }}
-        >
-          Cancel
-        </Link>
-        <button
-          className="button button-primary"
-          type="submit"
-          disabled={pending}
-        >
-          {pending ? (
-            <LoaderCircle size={17} className="spin" />
-          ) : (
-            <Save size={17} />
-          )}
-          {pending ? "Saving..." : event ? "Save changes" : "Create event"}
-        </button>
-      </div>
       <dialog
         ref={dialog}
         className="image-dialog"

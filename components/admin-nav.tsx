@@ -2,11 +2,15 @@
 
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { LoaderCircle, LogOut, Plus } from "lucide-react";
 import { Brand } from "@/components/brand";
 
 export function AdminNav({ name, email }: { name: string; email: string }) {
+  const pathname = usePathname();
+  const showCreateAction =
+    pathname !== "/admin/events/new" && !pathname.endsWith("/edit");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
 
@@ -26,15 +30,17 @@ export function AdminNav({ name, email }: { name: string; email: string }) {
       <div className="admin-topbar-inner">
         <Brand admin />
         <nav className="admin-topbar-actions" aria-label="Admin actions">
-          <Link
-            href="/admin/events/new"
-            className="button button-primary"
-            aria-label="Create event"
-            title="Create event"
-          >
-            <Plus size={18} />
-            <span>Create event</span>
-          </Link>
+          {showCreateAction && (
+            <Link
+              href="/admin/events/new"
+              className="button button-primary"
+              aria-label="Create event"
+              title="Create event"
+            >
+              <Plus size={18} />
+              <span>Create event</span>
+            </Link>
+          )}
           <details
             className="account-menu"
             onBlur={(event) => {

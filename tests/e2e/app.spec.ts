@@ -188,6 +188,15 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
   const title = `QA Event ${Date.now()}`;
   try {
     await page.getByRole("link", { name: "Create event" }).click();
+    await expect(
+      page.getByRole("navigation", { name: "Admin actions" }).getByRole("link", {
+        name: "Create event",
+      }),
+    ).toHaveCount(0);
+    await expect(page.getByText("Organizer", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("Time zone", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("Visibility", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("test event description")).toHaveCount(0);
     await page
       .getByRole("button", { name: "Create event", exact: true })
       .click();
@@ -361,6 +370,14 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
     await page
       .getByRole("link", { name: `Edit ${title}`, exact: true })
       .click();
+    await expect(
+      page.getByRole("navigation", { name: "Admin actions" }).getByRole("link", {
+        name: "Create event",
+      }),
+    ).toHaveCount(0);
+    await expect(page.getByText("Organizer", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("Time zone", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("Visibility", { exact: true })).toHaveCount(0);
     await expect(page.getByLabel("Date & time (WIB)")).toHaveValue(
       "2026-12-01T09:00",
     );
@@ -480,6 +497,11 @@ test("admin login, validation, persistent CRUD, confirmation, and logout", async
     await expect(
       page.getByRole("heading", { name: "Create event", exact: true }),
     ).toBeVisible();
+    await expect(
+      page.getByRole("navigation", { name: "Admin actions" }).getByRole("link", {
+        name: "Create event",
+      }),
+    ).toHaveCount(0);
     await noOverflow(page);
     if (width === 390) {
       await page.getByRole("button", { name: "Insert image" }).click();

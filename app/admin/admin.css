@@ -534,31 +534,16 @@
 .preview-event-body p svg {
   margin-top: 3px;
 }
-.preview-summary {
-  font-size: 11px;
-  margin-top: 24px;
-}
-.preview-summary > div {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 13px;
-}
-.preview-summary dt {
-  color: #77a0c8;
-}
-.preview-summary dd {
-  margin: 0;
-  text-align: right;
-  color: #4373a3;
-}
 .admin-shell .form-actions {
-  grid-column: 1 / -1;
-  margin-top: 15px;
-  padding-block: 20px;
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 18px;
   position: static;
-  background: #f5faff;
   border-top: 1px solid #dde3e9;
+}
+.admin-shell .form-actions .button {
+  flex: 1;
 }
 .admin-shell .notice {
   border-radius: 7px;
@@ -692,17 +677,14 @@
   .preview-event {
     max-width: 420px;
   }
-  .preview-summary {
-    max-width: 420px;
-  }
   .admin-shell .field input,
   .admin-shell .field select,
   .admin-shell .field textarea {
     font-size: 16px;
   }
   .admin-shell .form-actions {
-    margin-top: 0;
-    padding-block: 15px;
+    margin-top: 15px;
+    max-width: 420px;
   }
   .login-page .login-panel {
     padding: 28px 23px;
