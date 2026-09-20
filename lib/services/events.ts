@@ -7,6 +7,12 @@ import {
 } from "@/lib/validations/event";
 
 export const PAGE_SIZE = 9;
+const statusRank = {
+  ONGOING: 0,
+  UPCOMING: 1,
+  COMPLETED: 2,
+  CANCELLED: 3,
+};
 
 function whereFor({ search, status }: EventQuery): Prisma.EventWhereInput {
   return {
@@ -30,6 +36,24 @@ function whereFor({ search, status }: EventQuery): Prisma.EventWhereInput {
 export const eventService = {
   async list(query: EventQuery) {
     const where = whereFor(query);
+    if (query.status === "all") {
+      const allEvents = await prisma.event.findMany({ where });
+      const events = allEvents.sort((a, b) => {
+        const rank = statusRank[a.status] - statusRank[b.status];
+        if (rank) return rank;
+        const date = a.date.getTime() - b.date.getTime();
+        return date || a.id.localeCompare(b.id);
+      });
+      const total = events.length;
+      const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      const page = Math.min(query.page, pages);
+      return {
+        events: events.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+        total,
+        page,
+        pages,
+      };
+    }
     const total = await prisma.event.count({ where });
     const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
     const page = Math.min(query.page, pages);
@@ -55,7 +79,7 @@ export const eventService = {
         take: 3,
       }),
       prisma.event.findMany({
-        where: { status: "COMPLETED" },
+        where: { status: { in: ["COMPLETED", "CANCELLED"] } },
         orderBy: { date: "desc" },
         take: 3,
       }),

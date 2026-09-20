@@ -46,7 +46,16 @@ export default async function Home() {
       {nextEvent && (
         <Link className="next-event-band" href={`/events/${nextEvent.id}`}>
           <div className="container next-event-inner">
-            <strong>{nextEvent.title}</strong>
+            <span className="next-event-title">
+              <span
+                className={`next-event-status next-event-status-${nextEvent.status.toLowerCase()}`}
+              >
+                {nextEvent.status === "ONGOING"
+                  ? "Happening now"
+                  : "Upcoming event"}
+              </span>
+              <strong>{nextEvent.title}</strong>
+            </span>
             <span className="next-event-date">
               {formatDate(nextEvent.date)}
               <span>{formatTime(nextEvent.date)}</span>
@@ -84,13 +93,13 @@ export default async function Home() {
           </div>
           <div>
             <p className="about-lead">
-              We are a community of students exploring what technology can do
-              for people.
+              A student community for learning technology through practical
+              programs and shared curiosity.
             </p>
             <p>
-              At IEEE ITB Student Branch, we connect engineering knowledge with
-              new perspectives through workshops, conversations, and
-              collaborative experiences.
+              We bring students together through workshops, forums, and
+              community sessions that make engineering easier to explore,
+              discuss, and build on.
             </p>
             <div className="about-values">
               <span>
